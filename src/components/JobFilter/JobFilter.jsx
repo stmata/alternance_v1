@@ -20,6 +20,8 @@ const JobFilter = ({ platform, region }) => {
   const [page, setPage] = useState(0); // Pagination
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [isModalOpen, setIsModalOpen] = useState(false);  // État pour la modal
+  const baseUrl = import.meta.env.VITE_APP_BASE_URL
+
 
   // Fonction pour ouvrir la modal
   const handleOpenModal = () => {
@@ -40,7 +42,7 @@ const JobFilter = ({ platform, region }) => {
   const fetchJobData = async () => {
     try {
       // Appel direct de l'API déployée sur Azure
-      const response = await axios.get(`https://alternancescraping.azurewebsites.net/retrieve-file?site_name=${platform}&region=${region.replaceAll('-', '_')}`);
+      const response = await axios.get(`${baseUrl}/retrieve-file?site_name=${platform}&region=${region.replaceAll('-', '_')}`);
       console.log(response)
       if (response.status === 200) {
         const jobData = response.data.content;

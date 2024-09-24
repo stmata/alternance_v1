@@ -9,6 +9,7 @@ const PlatformPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);  // Track loading state
   const [error, setError] = useState(null);  // Track error state
+  const baseUrl = import.meta.env.VITE_APP_BASE_URL
 
   // UseEffect to fetch new data every time platform or region changes
   useEffect(() => {
@@ -16,10 +17,11 @@ const PlatformPage = () => {
       setLoading(true);  // Set loading to true whenever the platform or region changes
       setError(null);  // Reset error state
       try {
+
         const region2 = region.replaceAll('-', '_');
         console.log(region2)
         console.log(platform)
-        const response = await fetch(`https://alternancescraping.azurewebsites.net/analyze-data/${platform}/${region2}`);
+        const response = await fetch(`${baseUrl}/analyze-data/${platform}/${region2}`);
         if (!response.ok) throw new Error('Failed to fetch data');
         const result = await response.json();
         setData(result);  // Set the new data
