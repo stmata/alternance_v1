@@ -3,7 +3,6 @@ import {
   Box, Button, Table,Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, TablePagination, IconButton, Menu, MenuItem, ListItemIcon, ListItemText, TextField,  Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt'; // Use this icon instead
-import axios from 'axios';
 import '../../assets/styles.css';
 import PropTypes from 'prop-types';  // Import prop-types for validation
 import * as XLSX from 'xlsx';
@@ -42,10 +41,11 @@ const JobFilter = ({ platform, region }) => {
   const fetchJobData = async () => {
     try {
       // Appel direct de l'API déployée sur Azure
-      const response = await axios.get(`${baseUrl}/retrieve-file?site_name=${platform}&region=${region.replaceAll('-', '_')}`);
+      const response = await fetch (`${baseUrl}/retrieve-file?site_name=${platform}&region=${region.replaceAll('-', '_')}`);
       console.log(response)
       if (response.status === 200) {
-        const jobData = response.data.content;
+        const data = await response.json();
+        const jobData = data.content;
         if (jobData && jobData.length > 0) {
           setFilterData(jobData);
           setJobKeys(Object.keys(jobData[0])); // Extraction dynamique des clés
