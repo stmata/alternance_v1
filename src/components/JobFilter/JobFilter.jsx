@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, {useState, useEffect } from 'react';
 import {
   Box, Button, Table,Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, TablePagination, IconButton, Menu, MenuItem, ListItemIcon, ListItemText, TextField,  Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
@@ -6,6 +6,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt'; // Use this icon inst
 import '../../assets/styles.css';
 import PropTypes from 'prop-types';  // Import prop-types for validation
 import * as XLSX from 'xlsx';
+import './JobFilter.css'
 
 const JobFilter = ({ platform, region }) => {
   const [filterData, setFilterData] = useState([]);
@@ -19,8 +20,6 @@ const JobFilter = ({ platform, region }) => {
   const [page, setPage] = useState(0); // Pagination
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [isModalOpen, setIsModalOpen] = useState(false);  // État pour la modal
-  const baseUrl = import.meta.env.VITE_APP_BASE_URL
-
 
   // Fonction pour ouvrir la modal
   const handleOpenModal = () => {
@@ -41,7 +40,7 @@ const JobFilter = ({ platform, region }) => {
   const fetchJobData = async () => {
     try {
       // Appel direct de l'API déployée sur Azure
-      const response = await fetch (`${baseUrl}/retrieve-file?site_name=${platform}&region=${region.replaceAll('-', '_')}`);
+      const response = await fetch(`https://alternancescraping.azurewebsites.net/retrieve-file?site_name=${platform}&region=${region.replaceAll('-', '_')}`);
       console.log(response)
       if (response.status === 200) {
         const data = await response.json();
@@ -145,17 +144,28 @@ const JobFilter = ({ platform, region }) => {
     <Box>
       <Box className="button-container">
 
-      <Button onClick={handleOpenModal} variant="contained" className="job-button all">
+      <Button onClick={handleOpenModal} variant="contained" className="job-button all" >
             Visualize Filtered Jobs
         </Button>
 
-        <Button onClick={handleDownloadSelected} variant="contained" className="job-button selected">
-          Download Selected Jobs
-        </Button>
+        <Button
+  onClick={handleDownloadSelected}
+  variant="contained"
+  className="job-button selected"
+  disabled={selectedJobs.length === 0} // Désactive le bouton si aucun job n'est sélectionné
+>
+  Download Selected Jobs
+</Button>
 
-        <Button onClick={handleDownloadAll} variant="contained" className="job-button all">
-          Download All Jobs
-        </Button>
+<Button
+  onClick={handleDownloadAll}
+  variant="contained"
+  className="job-button all"
+  disabled={filterData.filter(applyFilters).length === 0} // Désactive le bouton si aucun job filtré
+>
+  Download All Jobs
+</Button>
+
 
       </Box>
 
@@ -182,27 +192,49 @@ const JobFilter = ({ platform, region }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filterData
-              .filter(applyFilters)
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((job, index) => (
-                <TableRow key={index} hover className="table-row">
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedJobs.includes(job)}
-                      onChange={() => handleSelect(job)}
-                      color="primary"
-                      className="table-checkbox"
-                    />
-                  </TableCell>
-                  {jobKeys.map((key) => (
-                    <TableCell className="table-cell" key={key}>
-                      {truncateText(job[key], 50)} {/* Apply truncation to all fields */}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-          </TableBody>
+  {filterData
+    .filter(applyFilters)
+    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    .map((job, index) => (
+      <React.Fragment key={index}>
+        <TableRow hover className="table-row job-row-separator">
+          {/* Checkbox avec ou sans texte selon l'écran */}
+          <TableCell padding="checkbox">
+            <Box display="flex" alignItems="center">
+              <Checkbox
+                checked={selectedJobs.includes(job)}
+                onChange={() => handleSelect(job)}
+                color="primary"
+                className="table-checkbox"
+              />
+              {/* Texte à côté de la case à cocher pour mobile et tablette */}
+              <Typography
+                variant="body2"
+                className="check-interested-text"
+                sx={{ display: { xs: 'inline', sm: 'inline', md: 'none' } }}
+              >
+              </Typography>
+            </Box>
+          </TableCell>
+          {jobKeys.map((key) => (
+            <TableCell className="table-cell" key={key} >
+              {/* Ajouter `:` après chaque clé */}
+              <span className="column-header-mobile">{key}:</span>
+              {truncateText(job[key], 50)} {/* Logic de troncature */}
+              <br />
+            </TableCell>
+          ))}
+        </TableRow>
+        {/* Ajout de ligne séparatrice entre les jobs */}
+        <TableRow>
+          <TableCell colSpan={jobKeys.length + 1} className="separator-row">
+            <Box className="job-separator" />
+          </TableCell>
+        </TableRow>
+      </React.Fragment>
+    ))}
+</TableBody>
+
         </Table>
       </TableContainer>
 
@@ -217,13 +249,13 @@ const JobFilter = ({ platform, region }) => {
         {selectedJobs.map((job, index) => (
           <Box key={index} className="job-card">
             <Box className="job-card-header">
-              <Typography variant="h6">{job.Title}</Typography>
+              <Typography variant="h6" className='jobTit'>{job.Title}</Typography>
             </Box>
             <Box className="job-card-body">
-              <Typography><strong>Company:</strong> {job.Company}</Typography>
-              <Typography><strong>Location:</strong> {job.Location}</Typography>
-              <Typography><strong>Publication Date:</strong> {job['Publication Date']}</Typography>
-              <Typography><strong>Description:</strong> {job.Description}</Typography>
+              <Typography className='jobInfs'><strong>Company:</strong> {job.Company}</Typography>
+              <Typography className='jobInfs'><strong>Location:</strong> {job.Location}</Typography>
+              <Typography className='jobInfs'><strong>Publication Date:</strong> {job['Publication Date']}</Typography>
+              <Typography className='jobInfs'><strong>Description:</strong> {job.Description}</Typography>
             </Box>
             <Box className="job-card-footer">
               <Button
@@ -245,8 +277,6 @@ const JobFilter = ({ platform, region }) => {
     <Button onClick={handleCloseModal} color="primary" className='closeBtn'>Close</Button>
   </DialogActions>
 </Dialog>
-
-
       {/* Filter dropdown menu */}
       <Menu
         anchorEl={anchorEl}

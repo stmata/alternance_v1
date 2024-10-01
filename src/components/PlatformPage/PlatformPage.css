@@ -1,0 +1,185 @@
+/* Base styles for the platform page */
+.error-container {
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 0px !important;
+    margin: 0 auto; /* Center content */
+    }
+    
+    .centered-icon {
+    display: flex;
+    justify-content: center;
+    font-size: larger !important;
+    }
+    
+    .error-message {
+    color: #D32F2F;
+    background-color: #FFEBEE;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    }
+    
+    .error-message h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    }
+    
+    .retry-button {
+    background-color: #171C3F !important;
+    color: white;
+    }
+    
+    .retry-button:hover {
+    background-color: #D32F2F !important;
+    color: white;
+    }
+
+.platform-page {
+    width: calc(100% - 80px) !important; /* 100% de la largeur moins 40px de chaque côté */
+    padding: 40px;
+    background-color: white; /* Fond bleu foncé */
+    border-radius: 20px;
+    text-align: center; /* Centrer le texte à l'intérieur */
+    box-sizing: border-box;
+    margin-top: 100px;
+    
+
+  }
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Ensures it takes the full width of the viewport */
+  }
+
+/* Headings and text */
+.platform-page h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #171C3F; 
+    margin-bottom: 20px;
+}
+
+.platform-page p {
+    font-size: 18px;
+    color: #D1E8E4; 
+    line-height: 1.6;
+}
+
+/* Full width for large screens */
+@media (min-width: 1024px) {
+    .platform-page {
+        width: calc(100% - 80px) !important; /* Full width minus margin */
+        max-width: none; /* No max-width */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Large screens - Error container */
+    .error-container {
+        max-width: 700px;
+        padding: 40px;
+    }
+
+    .error-message h2 {
+        font-size: 30px;
+    }
+
+    .retry-button {
+        font-size: 18px;
+        padding: 10px 20px;
+    }
+}
+
+/* Tablets (768px - 1024px) */
+@media (min-width: 1024px) and (max-width: 1023px) {
+    .platform-page {
+        /* max-width: 800px; Restrict width on tablets */
+        padding: 20px; /* Reduced padding for tablets */
+        margin-top: 100px;
+        width: calc(100% - 80px) !important;
+    }
+
+    .platform-page h1 {
+        font-size: 28px; /* Slightly smaller heading for tablets */
+    }
+
+    .platform-page p {
+        font-size: 16px; /* Adjusted paragraph size for readability on tablets */
+    }
+
+    /* Tablet-specific styles for error container */
+    .error-container {
+        max-width: 600px;
+        padding: 30px;
+    }
+
+    .error-message h2 {
+        font-size: 26px;
+    }
+
+    .retry-button {
+        font-size: 16px;
+        padding: 8px 16px;
+    }
+}
+
+/* Mobiles (less than 768px) */
+@media (max-width: 1024px) {
+    .platform-page {
+        width: calc(100vw - 80px) !important; /* Take full viewport width minus margin */
+        margin-right: auto; /* Center element horizontally */
+        border-radius: 10px; /* Slightly smaller border-radius for mobile */
+        padding: 0px; /* Eliminate padding to avoid extra spacing */
+        margin-top: 130px;
+        justify-content: center; /* Center content horizontally */
+    }
+
+    .platform-page h1 {
+        font-size: 24px; /* Smaller heading for mobiles */
+        line-height: 1.2; /* More compact line height */
+        margin-top: 100px !important;
+
+    }
+
+    .platform-page p {
+        font-size: 14px; /* Smaller text for readability on smaller screens */
+    }
+    /* Mobile-specific styles for error container */
+    .error-container {
+        width: 80%; /* Error container takes 80% of mobile width */
+        margin-top: 0px !important;
+        padding: 10px; /* Reduced padding for mobile */
+    }
+
+    .error-message {
+        max-width: 100%;
+        padding: 10px; /* Reduced padding */
+        font-size: 12px; /* Smaller font size for error message on mobile */
+    }
+
+    .error-message h2 {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .retry-button {
+        font-size: 12px !important;
+        padding: 8px;
+    }
+    .loader-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 60vh; /* Full viewport height */
+        width: 100vw; /* Ensures it takes the full width of the viewport */
+      }
+}

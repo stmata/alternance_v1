@@ -1,0 +1,200 @@
+/* Styles de base pour le navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: white;
+  z-index: 1000;
+  box-shadow: 0 8px 16px rgba(23, 28, 63, 0.5);
+}
+
+/* Hover effect for all screen sizes */
+.regions a {
+  color: #666; /* Default link color */
+  text-decoration: none;
+  transition: color 0.3s ease; /* Smooth transition for hover */
+}
+
+.regions a:hover {
+  color: red !important; /* Change color on hover */
+}
+
+/* Supprime l'effet de hover sur le titre */
+.main-menu .title:hover {
+  color: inherit; /* Garde la couleur du titre intacte */
+}
+
+.logo img {
+  width: 130px;
+  height: auto;
+  vertical-align: middle;
+}
+
+.burger-menu {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.main-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-menu li {
+  margin: 0 30px;
+  text-align: center;
+}
+
+.main-menu .title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+}
+
+.regions {
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.regions a {
+  text-decoration: none;
+  color: #666;
+}
+
+.separator {
+  margin: 0 10px;
+  color: #666;
+}
+
+/* Grandes écrans (au-dessus de 1024px) */
+@media (min-width: 1024px) {
+  .main-menu {
+    justify-content: flex-start;
+    margin-left: 20px;
+  }
+
+  .regions {
+    flex-direction: row; /* Les régions côte à côte */
+  }
+
+  .separator {
+    display: inline; /* Garde le séparateur pour les grandes surfaces */
+  }
+
+  /* Styles de hover pour grands écrans */
+  .regions a:hover {
+    color: red; /* Change de couleur pour les grands écrans */
+  }
+}
+
+/* Tablettes (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main-menu {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+
+  .regions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .separator {
+    display: none; /* Pas de séparateur sur tablette */
+  }
+
+  .regions a + a {
+    margin-top: 5px;
+  }
+  
+  .title {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+  }
+}
+
+/* Mobiles (less than 768px) */
+@media (max-width: 767px) {
+  .burger-menu {
+    display: block;
+    position: absolute;
+    right: 20px;
+    margin-right: 10px;
+    z-index: 1010;
+    color: #171C3F;
+  }
+
+  .main-menu {
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
+    padding: 5px;
+    background-color: rgba(23, 28, 63);
+    position: fixed;
+    top: 70px;
+    right: -100%; /* Completely hidden off-screen */
+    transition: right 0.5s ease;
+    z-index: 1010;
+    height: auto; /* Adjust height based on the content */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin-right: 20px;
+  }
+
+  .main-menu.open {
+    display: flex; /* Display menu when open */
+    right: 0; /* Slide in from the right when opened */
+  }
+
+  .regions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    color: white;
+  }
+
+  .regions a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+  }
+
+  .title {
+    display: block;
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+    color: whitesmoke !important; /* Change la couleur pour mobile */
+  }
+
+  .main-menu.open li a {
+    color: white;
+    font-weight: 500;
+    font-size: 18px;
+  }
+  .separator {
+    display: none !important; /* This makes the separator act as a line break on mobile */
+  }
+
+}
