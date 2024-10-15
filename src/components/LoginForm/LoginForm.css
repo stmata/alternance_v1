@@ -1,0 +1,79 @@
+/* Ensure the login body is centered and covers the full page */
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background: url('../../assets/background.jpg') no-repeat center center; /* Your image URL */
+    background-size: cover;
+}
+
+/* The glassmorphism effect on the login form */
+.wrapper {
+    width: 400px;
+    background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+    padding: 40px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px); /* Glassy effect with blur */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Optional border to enhance the glass effect */
+}
+
+/* Styling the title */
+.wrapper h1 {
+    font-size: 36px;
+    color: #fff; /* White text for visibility */
+    margin-bottom: 20px;
+}
+
+/* Style the input box */
+.input-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 40px;
+    border: none;
+    background: rgba(255, 255, 255, 0.5); /* Light transparent background */
+    color: #fff; /* White text for the input */
+    font-size: 16px;
+}
+
+.input-box input::placeholder {
+    color: #fff;
+}
+
+/* The icon inside the input box */
+.input-box .icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.7); /* Slight transparency */
+}
+
+/* Styling the login button */
+.wrapper button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #fff;
+    color: #333;
+    border-radius: 40px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Add hover effect to the button */
+.wrapper button:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-3px); /* Slight lift effect */
+}

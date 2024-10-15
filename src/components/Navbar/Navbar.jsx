@@ -1,33 +1,68 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBriefcase, faMapMarkerAlt, faSignOutAlt, faSearch, faLightbulb } from '@fortawesome/free-solid-svg-icons';
 import './Navbar.css';
 import logo from '../../assets/logo.png';
+import { AppContext } from '../../AppContext'; // Import du contexte
+import { useNavigate } from 'react-router-dom'; // Import du hook useNavigate
+import { Link } from 'react-router-dom';
+
+
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null); // Référence pour le menu
+  const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { platform, setPlatform, region, setRegion, searchTerm, setSearchTerm } = useContext(AppContext);
+
+
+  const navigate = useNavigate()
+  const platformRef = useRef(null);
+  const locationRef = useRef(null);
+  const menuRef = useRef(null);
+
+  const handlePlatformSelect = (platform) => {
+    setPlatform(platform);  // Utilisation du contexte pour sauvegarder la plateforme
+    setPlatformDropdownOpen(false);  // Ferme la liste déroulante après la sélection
+  };
+
+  const handleRegionSelect = (region) => {
+    setRegion(region);  // Utilisation du contexte pour sauvegarder la région
+    setLocationDropdownOpen(false);
+  };
+
+  const togglePlatformDropdown = () => {
+    setPlatformDropdownOpen((prev) => !prev);
+    setLocationDropdownOpen(false);
+  };
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen((prev) => !prev);
+    setPlatformDropdownOpen(false);
+  };
 
   const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
+    setIsMenuOpen((prev) => !prev); // Toggle du menu
   };
 
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
-
-  // Utilisation de useEffect pour détecter les clics en dehors du menu
+  // Gestion des clics en dehors du menu et des dropdowns
   useEffect(() => {
-    // Fonction pour fermer le menu si on clique à l'extérieur
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpen(false); // Fermer le menu si on clique en dehors
+      if (
+        menuRef.current && 
+        !menuRef.current.contains(event.target) && 
+        !event.target.closest('.burger-menu')
+      ) {
+        setIsMenuOpen(false);
+      }
+      if (platformRef.current && !platformRef.current.contains(event.target)) {
+        setPlatformDropdownOpen(false);
+      }
+      if (locationRef.current && !locationRef.current.contains(event.target)) {
+        setLocationDropdownOpen(false);
       }
     };
-
-    // Ajouter l'écouteur d'événement sur le document
     document.addEventListener('mousedown', handleClickOutside);
-
-    // Nettoyer l'événement lors de la destruction du composant
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -35,41 +70,64 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar">
+      <div className="burger-menu" onClick={toggleMenu}>
+        <div className={isMenuOpen ? 'burger-bar top transform' : 'burger-bar top'} />
+        <div className={isMenuOpen ? 'burger-bar middle hide' : 'burger-bar middle'} />
+        <div className={isMenuOpen ? 'burger-bar bottom transform' : 'burger-bar bottom'} />
+      </div>
+
+      <nav className={`navbar ${isMenuOpen ? 'active' : ''}`} ref={menuRef}>
         <div className="logo">
-          <img src={logo} alt="Logo" />
+
+          <Link to="/PlatformPage">
+    <img src={logo} alt="Logo" />
+  </Link>
         </div>
-        <button className="burger-menu" onClick={toggleMenu}>
-          ☰
-        </button>
-        <div className={`overlay ${menuOpen ? 'active' : ''}`} onClick={closeMenu}></div>
-        {/* Ajoute le ref ici pour le menu */}
-        <ul className={`main-menu ${menuOpen ? 'open' : ''}`} ref={menuRef}>
-          <li>
-            <div className="title">Indeed</div>
-            <div className="regions">
-              <Link to="/indeed/ile-de-france">Île-de-France</Link>
-              <span className="separator">|</span>
-              <Link to="/indeed/hauts-de-france">Hauts-de-France</Link>
-            </div>
-          </li>
-          <li>
-            <div className="title">LinkedIn</div>
-            <div className="regions">
-              <Link to="/linkedin/ile-de-france">Île-de-France</Link>
-              <span className="separator">|</span>
-              <Link to="/linkedin/hauts-de-france">Hauts-de-France</Link>
-            </div>
-          </li>
-          <li>
-            <div className="title">Apec</div>
-            <div className="regions">
-              <Link to="/apec/ile-de-france">Île-de-France</Link>
-              <span className="separator">|</span>
-              <Link to="/apec/hauts-de-france">Hauts-de-France</Link>
-            </div>
-          </li>
-        </ul>
+
+        <div ref={platformRef} className="dropdownPlatform" onClick={togglePlatformDropdown}>
+          <FontAwesomeIcon icon={faBriefcase} color='#171C3F'/>
+          <span>{platform || 'Platform'}</span>
+          {platformDropdownOpen && (
+            <ul className="dropdown-menu">
+              <li onClick={() => handlePlatformSelect('Indeed')}>Indeed</li>
+              <li onClick={() => handlePlatformSelect('LinkedIn')}>LinkedIn</li>
+              <li onClick={() => handlePlatformSelect('Apec')}>Apec</li>
+            </ul>
+          )}
+        </div>
+
+        <div ref={locationRef} className="dropdownRegion" onClick={toggleLocationDropdown}>
+          <FontAwesomeIcon icon={faMapMarkerAlt} color='#171C3F' />
+          <span>{region || 'Location'}</span>
+          {locationDropdownOpen && (
+            <ul className="dropdown-menu">
+              <li onClick={() => handleRegionSelect('Île-de-France')}>Île-de-France</li>
+              <li onClick={() => handleRegionSelect('Hauts-de-France')}>Hauts-de-France</li>
+            </ul>
+          )}
+        </div>
+
+        <div className="job-input">
+          <FontAwesomeIcon icon={faSearch} className="input-icon" color='#171C3F' />
+          <input
+            type="text"
+            placeholder="Enter Job Title"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+        </div>
+
+        <div className="smart-matching">
+        <button className="smart-btn" onClick={() => navigate('/SmartMatching')}>
+        <FontAwesomeIcon icon={faLightbulb} className="lightbulb-icon" color='#fff' />
+            <span className="smart-text">Smart Matching</span>
+          </button>
+        </div>
+
+        <div className="logout-icon">
+          <FontAwesomeIcon icon={faSignOutAlt} className="logout-btn" color='#171C3F' />
+        </div>
       </nav>
     </>
   );

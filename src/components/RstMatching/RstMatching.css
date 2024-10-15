@@ -1,0 +1,263 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap');
+
+/* Variables de couleur */
+:root {
+    --primary-color: #171C3F;
+    --secondary-color: #4A4E69;
+    --accent-color: #9A8C98;
+    --background-color: #f4f6f9;
+    --text-color: #333;
+    --border-color: #e0e0e0;
+    --hover-color: #C9ADA7;
+}
+
+/* Global styles */
+body {
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: var(--background-color);
+    padding: 20px;
+    color: var(--text-color);
+}
+
+.prefix-bold-heading {
+    font-weight: bold !important;
+}
+
+/* Heading */
+.prefix-h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-size: 2rem;
+}
+
+/* Global container */
+.prefix-divGlobal {
+    margin-top: 100px;
+    width: 90% !important;
+    padding: 20px;
+    border-radius: 10px;
+}
+.prefix-container3 {
+  margin-top: 100px !important;
+  width: 90% !important;
+}
+
+/* Divider */
+.prefix-divider2 {
+    width: 2px;
+    background-color: red;
+    height: auto;
+    transition: all 0.3s ease;
+}
+
+/* Job result row styling */
+.prefix-job-result-row {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+    width: 100%;
+}
+
+.prefix-job-result-row:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Styling for each block in the row */
+.prefix-job-result-block {
+    flex: 1;
+    padding: 15px;
+}
+
+/* First block (title and company) */
+.prefix-job-result-block:nth-child(1) {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+/* Second block (skills and description) */
+.prefix-job-result-block:nth-child(2) {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    margin-left: 20px;
+}
+
+.prefix-body1 {
+    color: red !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+/* Title and Company icons */
+.prefix-job-title-icon::before,
+.prefix-job-company-icon::before {
+    margin-right: 8px;
+}
+
+.prefix-job-company-icon::before {
+    content: '🏢';
+}
+
+/* Title styling */
+.prefix-job-result-block h6 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+/* Company styling */
+.prefix-MuiTypography-subtitle1 {
+    font-size: 1rem;
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+/* Button Styling */
+.prefix-MuiButton-contained {
+    color: white;
+    background-color: var(--primary-color);
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease-in-out, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.prefix-MuiButton-contained:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-3px);
+}
+
+/* Missing skills and description styling */
+.prefix-MuiTypography-body1 {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+/* Pagination styles */
+.prefix-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.prefix-pagination button {
+    color: white;
+    background-color: var(--primary-color);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.prefix-pagination button:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.prefix-button {
+    color: #171C3F !important;
+    font-weight: bold !important;
+    background-color: white !important;
+    border: #171C3F solid 2px !important;
+    transition: color 0.3s ease, text-decoration 0.3s ease !important;
+}
+
+.prefix-button:hover {
+    background-color: #171C3F !important;
+    color: white !important;
+    font-weight: bold !important;
+    transition: color 0.3s ease, text-decoration 0.3s ease !important;
+    border: none !important;
+}
+
+.prefix-button2 {
+    background-color: #171C3F !important;
+    color: white !important;
+    font-weight: bold !important;
+    transition: color 0.3s ease, text-decoration 0.3s ease !important;
+    border: none !important;
+}
+
+.prefix-button2:hover {
+    color: #171C3F !important;
+    font-weight: bold !important;
+    background-color: white !important;
+    border: #171C3F solid 2px !important;
+    transition: color 0.3s ease, text-decoration 0.3s ease !important;
+}
+
+.prefix-pagination span {
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+/* Responsive styles */
+@media (max-width: 899px) {
+    .prefix-divGlobal {
+        margin-top: 1px;
+        width: 100% !important;
+        padding: 10px;
+        background-color: yellow;
+    }
+
+    .prefix-container3 {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .prefix-job-result-row {
+        flex-direction: column;
+        padding: 10px;
+        width: 97%;
+        margin: 10px 0;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background-color: orange;
+    }
+
+    .prefix-job-result-block {
+        margin: 0;
+        padding: 10px;
+    }
+
+    .prefix-pagination {
+        margin-top: 10px;
+        gap: 5px;
+    }
+}
+
+@media (min-width: 900px) {
+    .prefix-divGlobal {
+        width: 90%;
+        margin: 0 auto;
+        padding: 30px;
+    }
+
+    .prefix-job-result-row {
+        width: 100%;
+        margin: 10px 0;
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .prefix-job-result-block {
+        padding: 20px;
+        margin: 0;
+    }
+}

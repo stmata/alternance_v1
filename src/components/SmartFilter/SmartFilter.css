@@ -1,0 +1,201 @@
+/* Conteneur principal */
+body{
+  background-color: white;
+}
+.smart-filter-container2 {
+  margin-top: 120px;
+  display: flex;
+  justify-content: space-between;
+  padding: 30px;
+  width: 95%;
+  background-color: #f9f9f9; /* Arrière-plan clair */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  border-radius: 12px; /* Coins arrondis */
+}
+.divider {
+  width: 2px; /* Épaisseur du trait */
+  background-color: red; /* Couleur du trait rouge */
+  height: auto; /* Hauteur par défaut */
+  transition: all 0.3s ease;
+}
+
+/* Style pour les sections */
+.filter-section {
+  width: 42%;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: center; /* Centrer le contenu */
+  transition: transform 0.3s ease;
+}
+
+.filter-section:hover {
+  transform: translateY(-5px);
+}
+
+/* Titres centrés */
+.filter-section h2 {
+  color: #171C3F;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center; /* Centrer le titre */
+}
+
+/* Paragraphes */
+.filter-section p {
+  color: #555;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.file-upload-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.file-upload-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(23, 28, 63, 0.5);
+  width: 93%; /* Modification de la largeur */
+  text-align: center;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.file-upload-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.file-upload-box {
+  border: 2px dashed #171C3F;
+  margin: auto;
+  padding: 30px;
+  width: 80%;
+  text-align: center;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  position: relative;
+}
+
+.file-input {
+  display: none; /* L'input est masqué */
+}
+
+.file-label {
+  font-size: 16px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-icon {
+  font-size: 40px;
+  color: #171C3F;
+  margin-bottom: 10px;
+}
+
+.file-size {
+  font-size: 12px;
+  color: #171C3F;
+  margin-top: 10px;
+}
+
+
+/* Textarea stylisé */
+.filter-section textarea {
+  width: 90%;
+  height: 220px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  background-color: #fafafa;
+  resize: vertical;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+}
+
+.filter-section textarea:focus { 
+  outline: none; 
+  border-color: #171C3F 2px solid !important;
+  box-shadow: 0 0 5px rgba(23, 28, 63, 0.5); /* Adjusted color for shadow */
+}
+
+/* Boutons centrés */
+.disabled-button {
+  background-color: #171C3F !important; /* Couleur du bouton désactivé */
+  color: rgb(245, 232, 232);
+  font-weight: bold;
+}
+
+.button-active {
+  background-color: white !important;
+  color: #171C3F !important;
+  border: 2px solid #171C3F !important;
+  font-weight: bold !important;
+
+}
+
+/* Style pour les boutons lien */
+.link-button {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+.link-button:hover {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+  border:none !important;
+}
+.link-button2 {
+  display: inline-block;
+  text-decoration: none;
+  color: #171C3F;
+  font-weight: bold;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+.link-button2:hover {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+  border:none !important;
+}
+
+
+
+/* Responsivité pour les petits écrans */
+@media (max-width: 899px) {
+  .smart-filter-container2 {
+    flex-direction: column;
+    align-items: center;
+    width: 88%;
+    margin-top: 50px;
+  }
+
+  .filter-section {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}

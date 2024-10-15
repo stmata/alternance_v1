@@ -1,200 +1,342 @@
-/* Styles de base pour le navbar */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
+/* Global Styles */
+html, body {
+  margin: 0;
+  padding: 0;
   width: 100%;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif; /* Modern font */
+}
+
+/* Navbar Styles */
+.navbar {
+  position: fixed; /* Fixer la navbar en haut de la page */
+  top: 0; /* Aligner en haut de la page */
+  left: 0; /* Aligner sur le côté gauche */
+  width: 100vw;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  background-color: white;
-  z-index: 1000;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #fff;
   box-shadow: 0 8px 16px rgba(23, 28, 63, 0.5);
-}
+  width: 100vw;
+  max-width: 100%;
+  box-sizing: border-box;
+  z-index: 9999; /* High enough to stay above other content */
 
-/* Hover effect for all screen sizes */
-.regions a {
-  color: #666; /* Default link color */
-  text-decoration: none;
-  transition: color 0.3s ease; /* Smooth transition for hover */
-}
-
-.regions a:hover {
-  color: red !important; /* Change color on hover */
-}
-
-/* Supprime l'effet de hover sur le titre */
-.main-menu .title:hover {
-  color: inherit; /* Garde la couleur du titre intacte */
 }
 
 .logo img {
-  width: 130px;
-  height: auto;
-  vertical-align: middle;
+  height: 40px;
 }
 
-.burger-menu {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-.main-menu {
+.job-input {
+  position: relative;
   display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.main-menu li {
-  margin: 0 30px;
-  text-align: center;
-}
-
-.main-menu .title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #333;
-}
-
-.regions {
-  font-size: 14px;
-  color: #666;
-  margin-top: 5px;
-  display: flex;
-  flex-direction: row;
   align-items: center;
 }
 
-.regions a {
-  text-decoration: none;
-  color: #666;
+.input-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #171C3F;
+  font-size: 16px; /* Match icon size to text */
 }
 
-.separator {
-  margin: 0 10px;
-  color: #666;
+input {
+  padding-left: 40px; /* Space for the icon */
+  padding-right: 10px;
+  height: 35px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 35px; /* Ensure the text is vertically centered */
+  box-sizing: border-box; /* Make sure padding and borders are included in the width/height */
 }
 
-/* Grandes écrans (au-dessus de 1024px) */
-@media (min-width: 1024px) {
-  .main-menu {
-    justify-content: flex-start;
-    margin-left: 20px;
-  }
-
-  .regions {
-    flex-direction: row; /* Les régions côte à côte */
-  }
-
-  .separator {
-    display: inline; /* Garde le séparateur pour les grandes surfaces */
-  }
-
-  /* Styles de hover pour grands écrans */
-  .regions a:hover {
-    color: red; /* Change de couleur pour les grands écrans */
-  }
+input::placeholder {
+  color: #ccc;
+  line-height: 35px; /* Ensure the placeholder text is vertically centered */
 }
 
-/* Tablettes (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .main-menu {
+.smart-matching:hover .lightbulb-icon {
+  color: #171C3F;
+}
+/* Smart Matching Button */
+.smart-matching button {
+  padding: 10px 20px;
+  background-color: #171C3F;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+}
+
+.smart-matching button:hover {
+  background-color: transparent !important;
+  color: #171C3F;
+  border: #171C3F 2px solid;
+}
+
+/* Logout Icon */
+.logout-icon {
+  margin-left: 5px;
+  margin-right: 20px;
+}
+
+.logout-btn {
+  cursor: pointer;
+  color: #333;
+  padding: 5px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  transition: background-color 0.3s ease;
+  font-size: 20px !important;
+}
+
+.logout-btn:hover {
+  background-color: #e0e0e0;
+}
+
+/* Dropdown container */
+.dropdownRegion, .dropdownPlatform {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* Location icon and text */
+.dropdownRegion .faMapMarkerAlt, .dropdownPlatform .faBriefcase {
+  font-size: 24px;
+  color: #333;
+  transition: color 0.3s ease;
+}
+.lightbulb-icon:hover{
+  color:#171C3F !important ;
+}
+.dropdownRegion span, .dropdownPlatform span {
+  display: block;
+  margin-top: 5px;
+  color: #555;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  padding: 10px 0;
+  z-index: 100;
+  min-width: 200px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.lightbulb-icon{
+  margin-right: 10px;
+}
+
+/* Dropdown menu visible when state is active */
+.dropdownRegion .dropdown-menu, .dropdownPlatform .dropdown-menu {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%);
+}
+
+/* Dropdown list items */
+.dropdown-menu li {
+  list-style-type: none;
+  padding: 10px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect for dropdown items */
+.dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+
+/* Change icon and text color when dropdown is open */
+.dropdownRegion.active .faMapMarkerAlt, .dropdownPlatform.active .faBriefcase {
+  color: #171C3F; /* Change color when dropdown is open */
+}
+
+.dropdownRegion.active span, .dropdownPlatform.active span {
+  color: #171C3F; /* Change text color when dropdown is open */
+}
+
+
+
+@media (max-width: 900px) {
+  .logo {
+    margin-top: 40px;
+  }
+
+  .navbar.active {
+    transform: translateX(0);
+  }
+
+  .burger-menu {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+    z-index: 1000;
+  }
+
+  .burger-menu div {
+    width: 25px;
+    height: 3px;
+    background-color: #171C3F;
+    margin: 5px 0;
+    transition: all 0.3s ease;
+  }
+
+  /* Remove text (spans) in Platform and Region dropdowns for mobile */
+  .dropdownRegion span,
+  .dropdownPlatform span,
+  .smart-text {
+    margin-left: 10px;
+  }
+
+  .dropdownRegion, .dropdownPlatform, .smart-matching, .job-input {
+    margin: 15px 0; /* Reduced margin for closer spacing */
     display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-left: 50px;
-    margin-right: 50px;
-  }
-
-  .regions {
-    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
   }
 
-  .separator {
-    display: none; /* Pas de séparateur sur tablette */
-  }
-
-  .regions a + a {
-    margin-top: 5px;
-  }
-  
-  .title {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #333;
-  }
+  /* Align elements properly */
+  .navbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align icons at the top */
+    align-items: flex-start;
+    padding-top: 30px; /* Give space for the logo */
+    background-color: #fff;
+    box-shadow: 0 8px 16px rgba(23, 28, 63, 0.5);
+    width: 200px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    transform: translateX(-100%); /* Menu is hidden by default */
 }
 
-/* Mobiles (less than 768px) */
-@media (max-width: 767px) {
-  .burger-menu {
-    display: block;
+  /* Dropdown menu appears outside the navbar */
+  .dropdown-menu {
     position: absolute;
-    right: 20px;
-    margin-right: 10px;
-    z-index: 1010;
+    left: 180px; /* Positionné à droite de la navbar */
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 10px 0;
+    z-index: 100;
+    opacity: 1;
+    visibility: visible;
+    text-align: left;
+  }
+
+  .job-input {
+    position: relative;
+    display: flex;
+  }
+  
+  .input-icon {
+    position: absolute;
+    left: 10px; /* Position the icon inside the input */
+    color: #171C3F; /* Set the color for the icon */
+    font-weight: bold;
+  }
+  input {
+    padding-left: 40px; /* Add padding to prevent text overlap with the icon */
+    padding-right: 10px;
+    height: 35px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  input:focus {
+    border: 2px solid #171C3F; /* Ajoute la largeur, le style et la couleur */
+    outline: none; /* Pour supprimer la bordure par défaut (si nécessaire) */
+}
+
+  input::placeholder {
+    color: #ccc;
+  }
+ 
+
+  /* Hover effect for Smart Matching icon (turns red) */
+  .smart-matching{
+    font-size: 12px;
+  }
+  .smart-matching:hover .lightbulb-icon {
     color: #171C3F;
   }
 
-  .main-menu {
-    display: none; /* Hidden by default */
-    flex-direction: column;
-    align-items: flex-start;
-    width: 50%;
-    padding: 5px;
-    background-color: rgba(23, 28, 63);
-    position: fixed;
-    top: 70px;
-    right: -100%; /* Completely hidden off-screen */
-    transition: right 0.5s ease;
-    z-index: 1010;
-    height: auto; /* Adjust height based on the content */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    margin-right: 20px;
-  }
-
-  .main-menu.open {
-    display: flex; /* Display menu when open */
-    right: 0; /* Slide in from the right when opened */
-  }
-
-  .regions {
+  .logout-icon {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    color: white;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; 
+    height: 100%; 
+    width: 100%;    
+    text-align: center; 
+  }
+  
+  .logout-btn {
+    font-size: 24px; /* Ajustez la taille de l'icône */
+    color: #171C3F;  /* Couleur par défaut de l'icône */
   }
 
-  .regions a {
-    color: white;
-    text-decoration: none;
-    margin-left: 20px;
+  /* Align items properly */
+  .dropdownRegion, .dropdownPlatform {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
   }
-
-  .title {
-    display: block;
-    text-align: left;
-    font-size: 18px;
-    font-weight: bold;
-    color: whitesmoke !important; /* Change la couleur pour mobile */
+  .burger-bar {
+    width: 25px;
+    height: 3px;
+    background-color: #171C3F;
+    margin: 5px 0;
   }
-
-  .main-menu.open li a {
-    color: white;
-    font-weight: 500;
-    font-size: 18px;
+  
+  .burger-bar.top {
+    transform-origin: top left;
   }
-  .separator {
-    display: none !important; /* This makes the separator act as a line break on mobile */
+  
+  .burger-bar.bottom {
+    transform-origin: bottom left;
   }
-
+  
+  .burger-bar.transform.top {
+    transform: rotate(45deg) translate(5px, 5px); /* Rotation vers le bas */
+  }
+  
+  .burger-bar.transform.bottom {
+    transform: rotate(-45deg) translate(5px, -5px); /* Rotation vers le haut */
+  }
+  
+  .burger-bar.middle.hide {
+    opacity: 0; /* Disparaît au milieu */
+  }
+  
 }
