@@ -40,6 +40,12 @@ const Navbar = () => {
     setLocationDropdownOpen((prev) => !prev);
     setPlatformDropdownOpen(false);
   };
+  const handleLogout = () => {
+    // Vider les sessions (localStorage ou sessionStorage)
+    localStorage.clear();  // Si vous utilisez localStorage
+    sessionStorage.clear(); // Si vous utilisez sessionStorage
+    
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev); // Toggle du menu
@@ -124,9 +130,10 @@ const Navbar = () => {
             <span className="smart-text">Smart Matching</span>
           </button>
         </div>
-
-        <div className="logout-icon">
-          <FontAwesomeIcon icon={faSignOutAlt} className="logout-btn" color='#171C3F' />
+        <div className="logout-icon" onClick={handleLogout}>
+          <Link to="/">  
+            <FontAwesomeIcon icon={faSignOutAlt} className="logout-btn" color='#171C3F' />
+          </Link>
         </div>
       </nav>
     </>
