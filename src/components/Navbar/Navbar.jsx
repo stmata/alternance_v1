@@ -85,7 +85,7 @@ const Navbar = () => {
       <nav className={`navbar ${isMenuOpen ? 'active' : ''}`} ref={menuRef}>
         <div className="logo">
 
-          <Link to="/PlatformPage">
+          <Link to="/">
     <img src={logo} alt="Logo" />
   </Link>
         </div>
