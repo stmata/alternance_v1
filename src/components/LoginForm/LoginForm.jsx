@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { FaUser, FaLock, FaArrowLeft } from 'react-icons/fa';
+import { FaUser, FaArrowLeft, FaHourglassHalf, FaLock, FaSyncAlt } from 'react-icons/fa';
 import styles from './LoginPage.module.css';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../../AppContext';
 
 const useTypewriterEffect = (text, duration) => {
   const [displayedText, setDisplayedText] = useState('');
-
   useEffect(() => {
     const totalChars = text.length;
     const timePerChar = duration / totalChars;
     let index = 0;
-
     const intervalId = setInterval(() => {
       index++;
       setDisplayedText(text.slice(0, index));
@@ -20,10 +18,8 @@ const useTypewriterEffect = (text, duration) => {
     
     return () => clearInterval(intervalId);
   }, [text, duration]);
-
   return displayedText;
 };
-
 
 const LoginForm = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(AppContext);
@@ -35,13 +31,12 @@ const LoginForm = () => {
   const [canResend, setCanResend] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [wrongCode, setWrongCode] = useState(false);
+  const navigate = useNavigate();
+  const baseUrl = import.meta.env.VITE_APP_BASE_URL; 
+  const fullText = "Welcome to the SKEMA Application Alternance.\n Discover job opportunities that match your skills with the power of AI. \n Enhance your CV with personalized recommendations and create tailored cover letters for your desired positions. \n Start your journey towards the perfect job! ";
+  
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  //const fullText = "Welcome to the SKEMA Application Alternance. Discover job opportunities that match your skills with the power of AI. Enhance your CV with personalized recommendations and create tailored cover letters for your desired positions. Start your journey towards the perfect job! ";
-  const fullText = "Welcome to the SKEMA Application Alternance.";
-  const smallScreenText = "Welcome to the SKEMA Application Alternance";
-  const navigate = useNavigate()
-  const textToDisplay = isSmallScreen ? smallScreenText : fullText;
-  const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+  const textToDisplay = isSmallScreen ? fullText : fullText;
   
   useEffect(() => {
     let timer;
@@ -66,12 +61,10 @@ const LoginForm = () => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 480);
     };
-
     handleResize(); 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
 
   const displayedText = useTypewriterEffect(textToDisplay, 15000);
 
@@ -89,16 +82,13 @@ const LoginForm = () => {
         throw new Error('Failed to send verification code');
       }
       
-      const data = await response.json();
-      //console.log('Verification code sent successfully:', data);
       return true;
     } catch (error) {
-      //console.error('Error sending verification code:', error);
       setError('Failed to send verification code. Please try again.');
       return false;
     }
   };
-  
+
   const verifyCode = async (email, code) => {
     try {
       const response = await fetch(`${baseUrl}/verify-code`, {
@@ -111,18 +101,12 @@ const LoginForm = () => {
       
       const data = await response.json();
 
-
-      if (data.statut === true) {
-        return true;
-      } else {
-        return false;
-      }
+      return data.statut === true;
     } catch (error) {
       console.error('Error verifying code:', error);
       return false;
     }
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -138,17 +122,16 @@ const LoginForm = () => {
     } else {
       const isValidCode = await verifyCode(email, code);
       if (isValidCode) {
-        setIsAuthenticated(true)
+        setIsAuthenticated(true);
         setIsConfirmed(true);
         setWrongCode(false);
         navigate('/PlatformPage');
       } else {
         setWrongCode(true);
-        setError('');
+        setError('Wrong code. Please try again.');
       }
     }
   };
-  
 
   const handleResendCode = () => {
     setCountdown(60);
@@ -164,39 +147,56 @@ const LoginForm = () => {
     setCountdown(60);
     setCanResend(false);
     setIsConfirmed(false);
-    setWrongCode(false);
+    setWrongCode(false);  // Reset the wrong code error state
+    setError('');  // Reset the general error state
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.loginContainer}>
       <div className={styles.animatedText}>
         {displayedText}
       </div>
-      <div className={styles.loginBox}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>Login</h2>
-          <div style={{ width: '24px' }}></div>
+      <div className={styles.loginFormBox}>
+        <div className={styles.formHeader}>
+          <h2 className={styles.formTitle}>Login :</h2>
         </div>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.inputGroup}>
-            <input
-              type="email"
-              id="email"
-              className={styles.input}
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isCodeSent}
-              required
-            />
-            <FaUser className={styles.inputIcon} size={20} />
-          </div>
+        <form onSubmit={handleSubmit} className={styles.loginForm}>
+          {/* Email input visible if code is NOT sent */}
+          {!isCodeSent && (
+            <div className={styles.inputGroup}>
+              <input
+                type="email"
+                id="email"
+                className={styles.inputField}
+                placeholder="Enter your SKEMA mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <FaUser className={styles.inputIcon} size={20} />
+            </div>
+          )}
+
+          {/* Code input visible if code IS sent */}
           {isCodeSent && (
+            <div className={styles.inputContainer}>
+            <FaArrowLeft 
+              onClick={handleReset} 
+              className={styles.outsideIcon} 
+              size={20} 
+              style={{
+                position: 'relative',
+                top: '-10px',       // Adjust this value to position the arrow above the input field
+                left: '0px',          // Position it to the left
+                cursor: 'pointer',  // Make it clickable
+                marginBottom: '10px' // Adjust the space between the arrow and input
+              }} 
+            />
             <div className={styles.inputGroup}>
               <input
                 type="text"
                 id="code"
-                className={styles.input}
+                className={styles.inputField}
                 placeholder="Enter the code received via email"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
@@ -204,40 +204,44 @@ const LoginForm = () => {
               />
               <FaLock className={styles.inputIcon} size={20} />
             </div>
-          )}
-          {isCodeSent && (
-            <div className={styles.flexBetween}>
-              <button
-                type="button"
-                onClick={handleReset}
-                className={styles.modifyEmailButton}
-              >
-                Modify email
-              </button>
-              {wrongCode && (
-                <span className={styles.errorMessage}>Wrong code. Please try again </span>
-              )}
             </div>
           )}
-          {error && <p className={styles.errorMessage}>{error}</p>}
-          <button type="submit" className={styles.button}>
+
+          
+          {/* {error && <p className={styles.errorText}>{error}</p>} */}
+
+          <button type="submit" className={styles.submitBtn}>
             {isCodeSent ? 'Confirm' : 'Login'}
           </button>
         </form>
+        {isCodeSent && wrongCode && (
+            <div className={styles.errorText}>Wrong code. Please try again!</div>
+          )}
+
+        {/* Timer for code resend */}
         {isCodeSent && !isConfirmed && (
-          <div className={styles.flexBetween} style={{ marginTop: '1rem' }}>
+          <div className={styles.actionGroup} style={{ marginTop: '1rem' }}>
             {canResend ? (
               <button
                 onClick={handleResendCode}
-                className={styles.resendCodeButton}
+                className={styles.resendCodeBtn}
               >
                 Resend code
+                <FaSyncAlt className={styles.resendIcon} size={14} style={{ marginLeft: '5px' }} />
+                
               </button>
             ) : (
-              <p className={styles.countdownText}>{countdown} seconds remaining</p>
+              <div className={styles.timerContainer}> {/* Added container div */}
+                <FaHourglassHalf 
+                  className={styles.timeIcon} 
+                  size={20} 
+                />
+                <p className={styles.countdownText}>{countdown} seconds remaining</p>
+              </div>
             )}
           </div>
         )}
+
       </div>
     </div>
   );

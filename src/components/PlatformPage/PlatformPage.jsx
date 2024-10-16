@@ -20,7 +20,6 @@ import JobDetails from '../JobDetails/JobDetails';
 
 const PlatformPage = () => {
   const { platform, region, searchTerm } = useContext(AppContext);
-
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -72,7 +71,6 @@ const PlatformPage = () => {
       .toLowerCase()
       .replace(/-/g, '_');
   };
-  console.log(platform, region)
 
   useEffect(() => {
     fetchData(normalizePlatform(platform), normalizeRegion(region));

@@ -11,7 +11,7 @@ const Navbar = () => {
   const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { platform, setPlatform, region, setRegion, searchTerm, setSearchTerm, setIsAuthenticated} = useContext(AppContext);
+  const { platform, setPlatform, region, setRegion, searchTerm, setSearchTerm, setIsAuthenticated, setSmartRegion, setSmartPlatform, setTextSummary, setFileSummary} = useContext(AppContext);
 
   const navigate = useNavigate();
   const location = useLocation();  // Get the current route
@@ -26,11 +26,24 @@ const Navbar = () => {
 
   // Fonction pour gérer la déconnexion
   const handleLogout = () => {
-    localStorage.clear();  // Si vous utilisez localStorage
-    sessionStorage.clear(); // Si vous utilisez sessionStorage
+    // Reset values in the AppContext
+    setPlatform('apec');  // Reset to default platform
+    setRegion('ile_de_france');  // Reset to default region
+    setFileSummary('');  // Clear fileSummary
+    setTextSummary('');  // Clear textSummary
+    setSmartPlatform('');  // Clear smart platform
+    setSmartRegion('');  // Clear smart region
+    setSmartRegion('');
+    setSearchTerm('');
+    setSmartPlatform('');
+
+    // Reset authentication status
     setIsAuthenticated(false);
-    navigate('/');  // Rediriger vers la page de connexion
-  };
+
+    // Redirect to the login page
+    navigate('/');
+};
+
   
   // Handle platform selection and close the dropdown
   const handlePlatformSelect = (platform) => {

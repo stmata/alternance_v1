@@ -210,7 +210,6 @@ const RstMatching = () => {
     {job.matching_skills && job.matching_skills.trim() !== '' ? (
   job.matching_skills.split('-').reduce((acc, skill, index) => {
     const cleanSkill = skill.trim();
-    console.log(cleanSkill);
 
     if (cleanSkill === '') {
       // If the skill is empty, add <empty>
@@ -272,17 +271,36 @@ const RstMatching = () => {
           <p>No matching results found. Please try again or update your matching criteria.</p>
         )}
 
-        <TablePagination
-          component="div"
-          count={result.length}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[]}
-          labelRowsPerPage={null}
-          showFirstButton={false}
-          showLastButton={false}
-        />
+        
+
+<TablePagination
+        component="div"
+        count={result.length}        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        rowsPerPageOptions={[]}
+        labelRowsPerPage={null}
+        showFirstButton={false}
+        showLastButton={false}
+        nextIconButtonProps={{
+          'aria-label': 'Next Page',
+          sx: { color: '#171C3F', fontWeight: 'bold' },
+        }}
+        backIconButtonProps={{
+          'aria-label': 'Previous Page',
+          sx: { color: '#171C3F', fontWeight: 'bold' },
+        }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          mt: 1,
+          color: '#171C3F',
+          fontWeight: 'bolder',
+          '& .MuiTablePagination-displayedRows': {
+            color: 'red',
+            fontWeight: 'bold',
+          },
+        }} />
 
         <Box mt={4} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Link to="/SmartMatching">
