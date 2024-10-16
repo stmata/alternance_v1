@@ -1,11 +1,5 @@
 /* Global Styles */
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  box-sizing: border-box;
-  font-family: 'Roboto', sans-serif; /* Modern font */
-}
+
 
 /* Navbar Styles */
 .navbar {

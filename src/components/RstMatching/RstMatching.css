@@ -12,10 +12,8 @@
 }
 
 /* Global styles */
-body {
+.prefix-container3 body {
     font-family: 'Nunito Sans', sans-serif;
-    background-color: var(--background-color);
-    padding: 20px;
     color: var(--text-color);
 }
 
@@ -33,8 +31,8 @@ body {
 
 /* Global container */
 .prefix-divGlobal {
-    margin-top: 100px;
-    width: 90% !important;
+    margin-top: 90px;
+    width: 95% !important;
     padding: 20px;
     border-radius: 10px;
 }
@@ -78,7 +76,6 @@ body {
 .prefix-job-result-block:nth-child(1) {
     background-color: #f8f9fa;
     border-radius: 10px;
-    margin-right: 20px;
 }
 
 /* Second block (skills and description) */
@@ -90,6 +87,14 @@ body {
 
 .prefix-body1 {
     color: red !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+.matching_skills{
+    color: black;
+}
+.prefix-body2{
+    color: green !important;
     font-size: 20px !important;
     font-weight: bold !important;
 }
@@ -207,28 +212,28 @@ body {
 /* Responsive styles */
 @media (max-width: 899px) {
     .prefix-divGlobal {
-        margin-top: 1px;
+        margin-top: 0px !important;
         width: 100% !important;
-        padding: 10px;
+        padding: 0px;
     }
 
     .prefix-container3 {
         flex-direction: column;
         align-items: center;
         width: 100%;
-        margin-top: 20px;
+        margin-top: 10px;
     }
 
     .prefix-job-result-row {
         flex-direction: column;
         padding: 10px;
-        width: 97%;
-        margin: 10px 0;
+        width: 90%;
+        margin: 5px auto;
         border-radius: 10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .prefix-job-result-block {
+    .prefix-job-result-block:nth-child(1){
         margin: 0;
         padding: 10px;
     }
@@ -240,19 +245,28 @@ body {
 }
 
 @media (min-width: 900px) {
+
     .prefix-divGlobal {
-        width: 90%;
-        margin: 0 auto;
-        padding: 30px;
+        margin-top: 0px !important;
+        width: 100% !important;
+        padding: 0px;
+
     }
 
-    .prefix-job-result-row {
+    .prefix-container3 {
+        align-items: center;
         width: 100%;
-        margin: 10px 0;
-        padding: 20px;
-        border-radius: 15px;
+        margin-top: 10px;
+     }
+     .prefix-job-result-row {
+        padding: 10px;
+        width: 90%;
+        margin: 5px auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
     }
-
+   
     .prefix-job-result-block {
         padding: 20px;
         margin: 0;

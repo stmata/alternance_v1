@@ -15,7 +15,11 @@ const SmartFilter = () => {
   const [fileName, setFileName] = useState(null);
   const [hasCvResults, setHasCvResults] = useState(false); // New state for CV results
   const [hasPromptResults, setHasPromptResults] = useState(false); // New state for prompt results
+  
   const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+
+  const platform = sessionStorage.getItem('platform');
+  const region = sessionStorage.getItem('region');
 
   // Load saved file, prompt, and check for stored results from sessionStorage on component mount
   useEffect(() => {
@@ -23,6 +27,8 @@ const SmartFilter = () => {
     const savedPrompt = sessionStorage.getItem('savedPrompt');
     const cvStoredResults = sessionStorage.getItem('cvStoredResults');
     const promptStoredResults = sessionStorage.getItem('promptStoredResults');
+    const fileSummarized = sessionStorage.getItem('isFileSummarized');
+    const textSummarized = sessionStorage.getItem('isTextSummarized');
 
     if (savedFile) {
       setFileName(savedFile);
@@ -39,6 +45,14 @@ const SmartFilter = () => {
     if (promptStoredResults) {
       setHasPromptResults(true);
     }
+
+    if (fileSummarized === 'true') {
+      setIsFileSummarized(true); // Restore summarized state for file
+    }
+
+    if (textSummarized === 'true') {
+      setIsTextSummarized(true); // Restore summarized state for text
+    }
   }, []);
 
   const normalizeString = (str) => {
@@ -53,13 +67,19 @@ const SmartFilter = () => {
   const handlePredict = async (summary, type) => {
     const platform = sessionStorage.getItem('platform');
     const region = sessionStorage.getItem('region');
-
     if (!platform || !region || !summary) {
       console.error('Missing data for prediction.');
       return;
     }
 
     try {
+      // Start loading and predicting
+      if (type === 'cv') {
+        setIsLoadingFile(true);
+      } else if (type === 'prompt') {
+        setIsLoadingText(true);
+      }
+
       const response = await fetch(`${baseUrl}/predict_summary`, {
         method: 'POST',
         headers: {
@@ -87,6 +107,13 @@ const SmartFilter = () => {
       }
     } catch (error) {
       console.error('Error fetching prediction:', error);
+    } finally {
+      // Stop loading when prediction is done
+      if (type === 'cv') {
+        setIsLoadingFile(false);
+      } else if (type === 'prompt') {
+        setIsLoadingText(false);
+      }
     }
   };
 
@@ -120,6 +147,7 @@ const SmartFilter = () => {
           sessionStorage.setItem('fileSummary', data.summary);
           setFileSummary(data.summary);
           setIsFileSummarized(true);
+          sessionStorage.setItem('isFileSummarized', 'true'); // Save summarized state to sessionStorage
 
           // Call prediction API for CV after summarization
           await handlePredict(data.summary, 'cv');
@@ -154,6 +182,7 @@ const SmartFilter = () => {
           sessionStorage.setItem('textSummary', data.summary);
           setTextSummary(data.summary);
           setIsTextSummarized(true);
+          sessionStorage.setItem('isTextSummarized', 'true'); // Save summarized state to sessionStorage
 
           // Save prompt to sessionStorage
           sessionStorage.setItem('savedPrompt', promptText);
@@ -182,6 +211,31 @@ const SmartFilter = () => {
     // Save prompt to sessionStorage
     sessionStorage.setItem('savedPrompt', value);
   };
+
+  // Trigger new prediction when platform or region changes
+  useEffect(() => {
+    const savedFileSummary = sessionStorage.getItem('fileSummary');
+    const savedTextSummary = sessionStorage.getItem('textSummary');
+  
+    if (platform || region) {
+      // Reset results and trigger prediction again
+      setHasCvResults(false);
+      setHasPromptResults(false);
+  
+      if (savedFileSummary && isFileSummarized) {
+        // Start prediction when platform or region changes
+        setIsLoadingFile(true);
+        handlePredict(savedFileSummary, 'cv').finally(() => setIsLoadingFile(false));
+      }
+  
+      if (savedTextSummary && isTextSummarized) {
+        // Start prediction when platform or region changes
+        setIsLoadingText(true);
+        handlePredict(savedTextSummary, 'prompt').finally(() => setIsLoadingText(false));
+      }
+    }
+  }, [platform, region, isFileSummarized, isTextSummarized]);
+  
 
   return (
     <div className="smart-filter-container2">
@@ -213,8 +267,8 @@ const SmartFilter = () => {
   </Link>
 ) : (
   <button
-    className={(!selectedFile || isFileSummarized || isLoadingFile) ? 'disabled-button' : 'button-active'}
-    disabled={!selectedFile || isFileSummarized || isLoadingFile}
+    className={(!selectedFile || isLoadingFile) ? 'disabled-button' : 'button-active'}
+    disabled={!selectedFile || isLoadingFile}
     onClick={handleStartMatching}
   >
     {isLoadingFile ? 'Processing...' : isFileSummarized ? 'View CV Results' : 'Start Matching'}

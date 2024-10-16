@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { AppContext } from '../../AppContext';
 import { ClipLoader } from 'react-spinners';
 import WarningIcon from '@mui/icons-material/Warning'
@@ -17,7 +17,6 @@ import {
 } from '@mui/material';
 import './PlatformPage.css';
 import JobDetails from '../JobDetails/JobDetails';
-import Navbar from '../Navbar/Navbar';
 
 const PlatformPage = () => {
   const { platform, region, searchTerm } = useContext(AppContext);
@@ -48,7 +47,6 @@ const PlatformPage = () => {
         }), 
       });
       const result = await response.json();
-      console.log(result)
 
       setData(result.content || []);
     } catch (error) {
@@ -74,6 +72,7 @@ const PlatformPage = () => {
       .toLowerCase()
       .replace(/-/g, '_');
   };
+  console.log(platform, region)
 
   useEffect(() => {
     fetchData(normalizePlatform(platform), normalizeRegion(region));
@@ -100,7 +99,9 @@ const PlatformPage = () => {
     ? data.filter(
         (job) =>
           job.Title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          job.Company.toLowerCase().includes(searchTerm.toLowerCase())
+        job.Company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.Location.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        (job['Publication Date']).toLowerCase().includes(searchTerm.toLowerCase()) 
       )
     : data;
 
@@ -232,7 +233,7 @@ const PlatformPage = () => {
       {selectedJob && (
   <Box
     className={`details-container ${isMobile && !isTableVisible ? 'active' : ''}`}
-    sx={{ width: isMobile ? '100%' : '30%', marginLeft: isMobile ? 0 : '20px' }}
+    sx={{ width: isMobile ? '100%' : '60%', marginLeft: isMobile ? 0 : '20px' }}
   >
     {/* Close button for desktop */}
     {!isMobile && (

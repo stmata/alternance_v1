@@ -6,7 +6,7 @@
 .split-view-container {
     display: flex;
     flex-direction: row;
-    width: 98% !important;
+    width: 95% !important;
     margin-top: 40px !important;
 }
 
@@ -50,7 +50,7 @@
   }
   
 /* Style global */
-body {
+.split-view-container body {
     font-family: 'Roboto', sans-serif;
     background-color: #f9f9f9;
     color: var(--secondary-color);
@@ -248,7 +248,8 @@ table tbody tr:hover {
     }
 
     .table-container {
-        width: 90% !important;
+        width: 100% !important;
+        margin: 50px auto;
         top: 0;
         height: auto;
         background-color: transparent;
