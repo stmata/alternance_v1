@@ -5,7 +5,7 @@ import './SmartFilter.css';
 import { InsertDriveFile } from '@mui/icons-material';
 
 const SmartFilter = () => {
-  const { setFileSummary, setTextSummary } = useContext(AppContext); // Destructure the context for summaries
+  const { setFileSummary, setTextSummary, setIsChanged, isChanged, hasCvResults, setHasCvResults,hasPromptResults, setHasPromptResults, setIsChanged2, isChanged2} = useContext(AppContext); // Destructure the context for summaries
   const [selectedFile, setSelectedFile] = useState(null);
   const [promptText, setPromptText] = useState('');
   const [isFileSummarized, setIsFileSummarized] = useState(false);
@@ -13,8 +13,6 @@ const SmartFilter = () => {
   const [isLoadingFile, setIsLoadingFile] = useState(false);
   const [isLoadingText, setIsLoadingText] = useState(false);
   const [fileName, setFileName] = useState(null);
-  const [hasCvResults, setHasCvResults] = useState(false); // New state for CV results
-  const [hasPromptResults, setHasPromptResults] = useState(false); // New state for prompt results
   
   const baseUrl = import.meta.env.VITE_APP_BASE_URL;
 
@@ -125,6 +123,7 @@ const SmartFilter = () => {
       setFileName(file.name);
       setIsFileSummarized(false); // Reset summarization state if file changes
       setHasCvResults(false); // Reset the CV results state
+      setIsChanged(true)
 
       // Save file name to sessionStorage
       sessionStorage.setItem('uploadedFileName', file.name);
@@ -207,6 +206,7 @@ const SmartFilter = () => {
     setPromptText(value);
     setIsTextSummarized(false); // Reset summarization state if prompt changes
     setHasPromptResults(false); // Reset the prompt results state
+    setIsChanged2(true)
 
     // Save prompt to sessionStorage
     sessionStorage.setItem('savedPrompt', value);
@@ -216,25 +216,31 @@ const SmartFilter = () => {
   useEffect(() => {
     const savedFileSummary = sessionStorage.getItem('fileSummary');
     const savedTextSummary = sessionStorage.getItem('textSummary');
-  
-    if (platform || region) {
-      // Reset results and trigger prediction again
+    
+    // Trigger when platform or region changes for the CV (file)
+    if (isChanged) {
       setHasCvResults(false);
-      setHasPromptResults(false);
-  
       if (savedFileSummary && isFileSummarized) {
-        // Start prediction when platform or region changes
         setIsLoadingFile(true);
-        handlePredict(savedFileSummary, 'cv').finally(() => setIsLoadingFile(false));
-      }
-  
-      if (savedTextSummary && isTextSummarized) {
-        // Start prediction when platform or region changes
-        setIsLoadingText(true);
-        handlePredict(savedTextSummary, 'prompt').finally(() => setIsLoadingText(false));
+        handlePredict(savedFileSummary, 'cv').finally(() => {
+          setIsLoadingFile(false);
+          setIsChanged(false); // Reset isChanged after operation
+        });
       }
     }
-  }, [platform, region, isFileSummarized, isTextSummarized]);
+  
+    // Trigger when platform or region changes for the prompt
+    if (isChanged2) {
+      setHasPromptResults(false);
+      if (savedTextSummary && isTextSummarized) {
+        setIsLoadingText(true);
+        handlePredict(savedTextSummary, 'prompt').finally(() => {
+          setIsLoadingText(false);
+          setIsChanged2(false); // Reset isChanged2 after operation
+        });
+      }
+    }
+  }, [platform, region, isFileSummarized, isTextSummarized, isChanged, isChanged2]);
   
 
   return (
@@ -275,9 +281,7 @@ const SmartFilter = () => {
   </button>
 )}
       </div>
-
       <div className="divider"></div>
-
       <div className="filter-section">
         <h2>Enter Your Marketing Role Preferences:</h2>
         <p>Looking for your next marketing role? Simply enter your desired criteria into our intelligent search system. Our AI-powered tool will match you with the best opportunities tailored to your preferences. Start your search now and discover roles that fit your skills and goals. Effortlessly find your perfect marketing job today!</p>

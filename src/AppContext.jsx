@@ -10,9 +10,51 @@ export const AppProvider = ({ children }) => {
   const [textSummary, setTextSummary] = useState(sessionStorage.getItem('textSummary') || '');
   const [smartPlatform, setSmartPlatform] = useState(sessionStorage.getItem('smartPlatform') || '');
   const [smartRegion, setSmartRegion] = useState(sessionStorage.getItem('smartRegion') || '');
+  const [hasCvResults, setHasCvResults] = useState(
+    sessionStorage.getItem('hasCvResults') === 'true' || false
+  );
   const [isAuthenticated, setIsAuthenticated] = useState(
     sessionStorage.getItem('isAuthenticated') === 'true' || false
   );
+  const [firstVisitPlatform, setFirstVisitPlatform] = useState(
+    sessionStorage.getItem('firstVisitPlatform') === 'false' ? false : true
+  );
+  const [firstVisitRegion, setFirstVisitRegion] = useState(
+    sessionStorage.getItem('firstVisitRegion') === 'false' ? false : true
+  );
+  const [isChanged, setIsChanged] = useState(
+    sessionStorage.getItem('isChanged') === 'true' ? true : false
+  );
+  const [isChanged2, setIsChanged2] = useState(
+    sessionStorage.getItem('isChanged2') === 'true' ? true : false
+  );
+  const [hasPromptResults, setHasPromptResults] = useState(
+    sessionStorage.getItem('hasPromptResults') === 'true' || false
+  );
+  
+  useEffect(() => {
+    sessionStorage.setItem('hasCvResults', hasCvResults ? 'true' : 'false');
+  }, [hasCvResults]);
+  useEffect(() => {
+    sessionStorage.setItem('hasPromptResults', hasPromptResults ? 'true' : 'false');
+  }, [hasPromptResults]);
+  useEffect(() => {
+    sessionStorage.setItem('isChanged', isChanged ? 'false' : 'true');
+  }, [isChanged]);
+  useEffect(() => {
+    sessionStorage.setItem('isChanged2', isChanged2 ? 'false' : 'true');
+  }, [isChanged2]);
+  useEffect(() => {
+    sessionStorage.setItem('hasCvResults', hasCvResults ? 'true' : 'false');
+  }, [hasCvResults]);
+
+  useEffect(() => {
+    sessionStorage.setItem('firstVisitPlatform', firstVisitPlatform ? 'true' : 'false');
+  }, [firstVisitPlatform]);
+
+  useEffect(() => {
+    sessionStorage.setItem('firstVisitRegion', firstVisitRegion ? 'true' : 'false');
+  }, [firstVisitRegion]);
 
   // Synchroniser les valeurs avec sessionStorage
   useEffect(() => {
@@ -61,7 +103,7 @@ export const AppProvider = ({ children }) => {
   }, [textSummary]);
 
   return (
-    <AppContext.Provider value={{isAuthenticated, setIsAuthenticated, platform, setPlatform, region, setRegion, searchTerm, setSearchTerm, fileSummary, setFileSummary, textSummary, setTextSummary, smartPlatform, setSmartPlatform, smartRegion, setSmartRegion }}>
+    <AppContext.Provider value={{hasPromptResults, setHasPromptResults, isAuthenticated, setIsAuthenticated, platform, setPlatform, region, setRegion, searchTerm, setSearchTerm, fileSummary, setFileSummary, textSummary, setTextSummary, smartPlatform, setSmartPlatform, smartRegion, setSmartRegion, firstVisitPlatform, setFirstVisitPlatform, firstVisitRegion, setFirstVisitRegion, isChanged, setIsChanged, hasCvResults, setHasCvResults, isChanged2, setIsChanged2 }}>
       {children}
     </AppContext.Provider>
   );

@@ -297,7 +297,9 @@ input::placeholder {
   
   .logout-btn {
     font-size: 24px; /* Ajustez la taille de l'icône */
-    color: #171C3F;  /* Couleur par défaut de l'icône */
+    color: #171C3F !important;  /* Couleur par défaut de l'icône */
+    position: fixed; /* Fixe le bouton à un endroit spécifique */
+    bottom: 15px;
   }
 
   /* Align items properly */

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBriefcase, faMapMarkerAlt, faSignOutAlt, faSearch, faLightbulb } from '@fortawesome/free-solid-svg-icons';
+import { faBriefcase, faMapMarkerAlt, faSignOutAlt, faSearch, faLightbulb, faCog, faL } from '@fortawesome/free-solid-svg-icons';
 import './Navbar.css';
 import logo from '../../assets/logo.png';
 import { AppContext } from '../../AppContext'; // Import du contexte
@@ -11,7 +11,8 @@ const Navbar = () => {
   const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { platform, setPlatform, region, setRegion, searchTerm, setSearchTerm, setIsAuthenticated, setSmartRegion, setSmartPlatform, setTextSummary, setFileSummary} = useContext(AppContext);
+  const { setHasCvResults, setHasPromptResults, platform, setPlatform, region, setRegion, searchTerm, setSearchTerm, setIsAuthenticated, setSmartRegion, setSmartPlatform, setTextSummary, setFileSummary, firstVisitPlatform, setFirstVisitPlatform, firstVisitRegion, setFirstVisitRegion, setIsChanged, setIsChanged2} = useContext(AppContext);
+
 
   const navigate = useNavigate();
   const location = useLocation();  // Get the current route
@@ -36,9 +37,13 @@ const Navbar = () => {
     setSmartRegion('');
     setSearchTerm('');
     setSmartPlatform('');
-
-    // Reset authentication status
+    setFirstVisitPlatform(true);  
+    setFirstVisitRegion(true);
     setIsAuthenticated(false);
+    setIsChanged(false);
+    setIsChanged2(false);
+    setHasPromptResults(false);
+    setHasCvResults(false);
 
     // Redirect to the login page
     navigate('/');
@@ -50,6 +55,10 @@ const Navbar = () => {
     setPlatform(platform);  
     sessionStorage.setItem('platform', platform);  
     setPlatformDropdownOpen(false);  
+    setFirstVisitPlatform(false);
+    setIsChanged(true);
+    setIsChanged2(true);
+
   };
 
   // Handle region selection and close the dropdown
@@ -57,6 +66,11 @@ const Navbar = () => {
     setRegion(region);  
     sessionStorage.setItem('region', region);  
     setLocationDropdownOpen(false);  
+    setFirstVisitRegion(false);    
+    setIsChanged(true);
+    setIsChanged2(true);
+
+
   };
 
   // Ouvrir/fermer le dropdown au clic sur l'icône
@@ -119,7 +133,7 @@ const Navbar = () => {
           onClick={togglePlatformDropdown} 
         >
           <FontAwesomeIcon icon={faBriefcase} color='#171C3F'/>
-          <span>{platform || 'Platform'}</span>
+          <span>{firstVisitPlatform ? 'Source' : platform}</span>
           {platformDropdownOpen && (
             <ul className="dropdown-menu" onMouseLeave={handleMouseLeaveDropdown}> 
               <li onClick={() => handlePlatformSelect('Indeed')}>Indeed</li>
@@ -136,7 +150,7 @@ const Navbar = () => {
           onClick={toggleLocationDropdown}  
         >
           <FontAwesomeIcon icon={faMapMarkerAlt} color='#171C3F' />
-          <span>{region || 'Location'}</span>
+          <span>{firstVisitRegion ? 'Region' : region}</span>
           {locationDropdownOpen && (
             <ul className="dropdown-menu" onMouseLeave={handleMouseLeaveDropdown}>  
               <li onClick={() => handleRegionSelect('Île-de-France')}>Île-de-France</li>
@@ -150,7 +164,7 @@ const Navbar = () => {
             <FontAwesomeIcon icon={faSearch} className="input-icon" color='#171C3F' />
             <input
               type="text"
-              placeholder="Enter Job Title"
+              placeholder="Enter a key information"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -158,10 +172,17 @@ const Navbar = () => {
         )}
 
         <div className="smart-matching">
-          <button className="smart-btn" onClick={() => navigate('/SmartMatching')}>
-            <FontAwesomeIcon icon={faLightbulb} className="lightbulb-icon" color='#fff' />
-            <span className="smart-text">Smart Matching</span>
-          </button>
+          <button className="smart-btn" onClick={() => navigate(location.pathname === '/PlatformPage' ? '/SmartMatching' : '/PlatformPage')}>
+          {/* Conditionally render the icon and text */}
+          <FontAwesomeIcon 
+            icon={location.pathname === '/PlatformPage' ? faLightbulb : faCog} 
+            className="lightbulb-icon"
+            color='#fff' 
+          />
+          <span className="matching-text">
+            {location.pathname === '/PlatformPage' ? 'Smart Matching' : 'Manual Matching'}
+          </span>
+        </button>
         </div>
 
         <div className="logout-icon" onClick={handleLogout}>

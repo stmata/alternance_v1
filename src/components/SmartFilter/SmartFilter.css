@@ -142,6 +142,7 @@
   background-color: #171C3F !important; /* Couleur du bouton désactivé */
   color: rgb(245, 232, 232);
   font-weight: bold;
+  pointer-events: none;
 }
 
 .button-active {

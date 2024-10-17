@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { FaUser, FaArrowLeft, FaHourglassHalf, FaLock, FaSyncAlt } from 'react-icons/fa';
 import styles from './LoginPage.module.css';
 import { useNavigate } from 'react-router-dom';
@@ -32,12 +32,21 @@ const LoginForm = () => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [wrongCode, setWrongCode] = useState(false);
   const navigate = useNavigate();
+  const [isSkemaDomain, setIsSkemaDomain] = useState(true);
   const baseUrl = import.meta.env.VITE_APP_BASE_URL; 
   const fullText = "Welcome to the SKEMA Application Alternance.\n Discover job opportunities that match your skills with the power of AI. \n Enhance your CV with personalized recommendations and create tailored cover letters for your desired positions. \n Start your journey towards the perfect job! ";
   
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const textToDisplay = isSmallScreen ? fullText : fullText;
-  
+  const isValidEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    if (!emailRegex.test(email)) {
+        return false;
+    }
+ 
+    return email.endsWith('@skema.edu');
+}
   useEffect(() => {
     let timer;
     if (isCodeSent && !isConfirmed && countdown > 0) {
@@ -111,7 +120,12 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); 
-    
+
+    if (!isValidEmail(email)) {
+      setIsSkemaDomain(false)
+      setError('Please use SKEMA email!');
+      return;
+    }
     if (!isCodeSent) {
       const codeSent = await sendVerificationCode(email);
       if (codeSent) {
@@ -133,13 +147,15 @@ const LoginForm = () => {
     }
   };
 
-  const handleResendCode = () => {
-    setCountdown(60);
-    setCanResend(false);
-    setIsConfirmed(false);
-    setWrongCode(false);
+  const handleResendCode = async () => {
+    const codeSent = await sendVerificationCode(email);
+      if (codeSent) {
+        setCountdown(60);
+      setCanResend(false);
+      setIsConfirmed(false);
+      setWrongCode(false);
+      }
   };
-
   const handleReset = () => {
     setEmail('');
     setCode('');
@@ -214,6 +230,9 @@ const LoginForm = () => {
             {isCodeSent ? 'Confirm' : 'Login'}
           </button>
         </form>
+        {!isCodeSent && !isSkemaDomain && (
+            <div className={styles.errorText}>{error}</div>
+        )}
         {isCodeSent && wrongCode && (
             <div className={styles.errorText}>Wrong code. Please try again!</div>
           )}

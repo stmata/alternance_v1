@@ -10,6 +10,9 @@
     --border-color: #e0e0e0;
     --hover-color: #C9ADA7;
 }
+.nacolor{
+    color: #171C3F;
+}
 
 /* Global styles */
 .prefix-container3 body {
@@ -47,7 +50,9 @@
     height: auto;
     transition: all 0.3s ease;
 }
-
+.close-button{
+    color: red;
+}
 /* Job result row styling */
 .prefix-job-result-row {
     display: flex;
@@ -242,6 +247,28 @@
         margin-top: 10px;
         gap: 5px;
     }
+    .predict_title{
+        font-size: 22px !important;
+        margin-bottom: 0px !important;
+    }
+    .table-container{
+        margin-top: 5px;
+    }
+    .prefix-job-result-block h6{
+        font-size: 16px;
+    }
+    .prefix-job-result-block .subtitle1{
+        font-size: 16px;
+    }
+    .prefix-button{
+        font-size: 12px !important;
+    }
+    .prefix-body1{
+        font-size: 16px !important;
+    }
+    .prefix-body2{
+        font-size: 16px !important;
+    }
 }
 
 @media (min-width: 900px) {
@@ -271,4 +298,5 @@
         padding: 20px;
         margin: 0;
     }
+    
 }
