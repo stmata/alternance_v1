@@ -40,3 +40,9 @@
 .read-the-docs {
   color: #888;
 }
+/* Forcer le mode clair si le navigateur est en mode sombre */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light;
+  }
+}

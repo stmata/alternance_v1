@@ -61,8 +61,8 @@ const CoverLetter = ({ coverLetter }) => {
     <Box className="cover-letter-container" sx={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px' }}>
       {/* Download Button with Icon */}
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <IconButton onClick={downloadCoverLetterWord} color="primary">
-          <FileDownloadIcon /> {/* Icon for Download */}
+        <IconButton onClick={downloadCoverLetterWord} >
+            <FileDownloadIcon sx={{ color: '#171C3F' }} />
         </IconButton>
       </Box>
 
