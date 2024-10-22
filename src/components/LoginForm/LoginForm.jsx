@@ -22,8 +22,7 @@ const useTypewriterEffect = (text, duration) => {
 };
 
 const LoginForm = () => {
-  const { isAuthenticated, setIsAuthenticated } = useContext(AppContext);
-  const [email, setEmail] = useState('');
+  const {email, setEmail,isAuthenticated, setIsAuthenticated } = useContext(AppContext);
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -79,7 +78,7 @@ const LoginForm = () => {
 
   const sendVerificationCode = async (email) => {
     try {
-      const response = await fetch(`${baseUrl}/send-verification-code`, {
+      const response = await fetch(`${baseUrl}/auth/send-verification-code`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -98,9 +97,42 @@ const LoginForm = () => {
     }
   };
 
+  // const registerUser = async (email) => {
+  //   try {
+  //     const response = await fetch(`http://127.0.0.1:8000/register-user`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ email }),
+  //     });
+  
+  //     if (!response.ok) {
+  //       throw new Error('Failed to register user');
+  //     }
+  
+  //     const data = await response.json();
+  
+  //     // Assuming the response contains the user_id
+  //     const userId = data.user_id;
+      
+  //     if (userId) {
+  //       // Store user_id in sessionStorage
+  //       sessionStorage.setItem('user_id', userId);
+  //       console.log('User registered successfully, user_id saved in sessionStorage');
+  //     } else {
+  //       throw new Error('User ID not found in response');
+  //     }
+  
+  //   } catch (error) {
+  //     console.error('Error registering user:', error);
+  //   }
+  // };
+  
+
   const verifyCode = async (email, code) => {
     try {
-      const response = await fetch(`${baseUrl}/verify-code`, {
+      const response = await fetch(`${baseUrl}/auth/verify-code`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,8 +142,15 @@ const LoginForm = () => {
       
       const data = await response.json();
 
-      return data.statut === true;
-    } catch (error) {
+      if (data.statut === true && data.user_id) {
+        // Store user_id in sessionStorage instead of email
+        sessionStorage.setItem('user_id', data.user_id);
+
+        return true;
+      }
+  
+      return false;
+      } catch (error) {
       console.error('Error verifying code:', error);
       return false;
     }
@@ -120,12 +159,13 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); 
-
+  
     if (!isValidEmail(email)) {
       setIsSkemaDomain(false)
       setError('Please use SKEMA email!');
       return;
     }
+    
     if (!isCodeSent) {
       const codeSent = await sendVerificationCode(email);
       if (codeSent) {
@@ -139,13 +179,20 @@ const LoginForm = () => {
         setIsAuthenticated(true);
         setIsConfirmed(true);
         setWrongCode(false);
+
+        sessionStorage.setItem('userEmail', email);
+        // Naviguer vers la page platform
         navigate('/PlatformPage');
+  
+        // Appel POST pour enregistrer l'email dans la base de données
+        // await registerUser(email);
       } else {
         setWrongCode(true);
         setError('Wrong code. Please try again.');
       }
     }
   };
+  
 
   const handleResendCode = async () => {
     const codeSent = await sendVerificationCode(email);
@@ -196,18 +243,15 @@ const LoginForm = () => {
           {/* Code input visible if code IS sent */}
           {isCodeSent && (
             <div className={styles.inputContainer}>
-            <FaArrowLeft 
-              onClick={handleReset} 
-              className={styles.outsideIcon} 
-              size={20} 
-              style={{
-                position: 'relative',
-                top: '-10px',       // Adjust this value to position the arrow above the input field
-                left: '0px',          // Position it to the left
-                cursor: 'pointer',  // Make it clickable
-                marginBottom: '10px' // Adjust the space between the arrow and input
-              }} 
-            />
+              <div className={styles.iconAndEmail}>
+                <FaArrowLeft 
+                  onClick={handleReset} 
+                  className={styles.outsideIcon} 
+                  size={20} 
+                />
+                <span className={styles.emailText}>{email}</span>
+              </div>
+
             <div className={styles.inputGroup}>
               <input
                 type="text"

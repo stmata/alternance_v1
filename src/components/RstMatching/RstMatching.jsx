@@ -1,13 +1,20 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Box, Typography, Button, TablePagination } from "@mui/material";
-import { Star, StarHalf, StarBorder } from "@mui/icons-material"; // Utiliser CheckCircleIcon
-import { useLocation, Link } from "react-router-dom";
+import {
+  Star,
+  StarHalf,
+  StarBorder,
+  // FavoriteBorder,
+  // Favorite,
+} from "@mui/icons-material";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import "./RstMatching.css";
-import { AppContext } from "../../AppContext"; // Importer AppContext
+import { AppContext } from "../../AppContext";
 import CoverLetter from "../CoverLetter/CoverLetter";
 
 const RstMatching = () => {
-  const { platform, region, setIsChanged, setIsChanged2 } = useContext(AppContext);
+  const { platform, region, setIsChanged, setIsChanged2 } =
+    useContext(AppContext);
   const [prevPlatform, setPrevPlatform] = useState(
     sessionStorage.getItem("platform")
   );
@@ -22,16 +29,47 @@ const RstMatching = () => {
   const queryParams = new URLSearchParams(location.search);
   const resultType = queryParams.get("type");
   const [selectedCoverLetter, setSelectedCoverLetter] = useState(null);
-  const backButtonRef = useRef(null);
-  const [showMatchingSkills, setShowMatchingSkills] = useState({}); // État pour gérer l'affichage des matching skills
+  const [showMatchingSkills, setShowMatchingSkills] = useState({});
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
   const [isTableVisible, setIsTableVisible] = useState(true);
+  const navigate = useNavigate(); // Use navigate to programmatically navigate
+  // const [likedRows, setLikedRows] = useState({}); // Track liked rows
+  // const baseUrl = import.meta.env.VITE_APP_BASE_URL; 
 
+
+  // Function to handle heart icon click
+  // const handleLikeClick = (job, index) => {
+  //   setLikedRows((prevState) => ({
+  //     ...prevState,
+  //     [index]: !prevState[index], // Toggle the like state
+  //   }));
+
+  //   // Send row data to the backend for the likes using fetch
+  //   fetch(`${baseUrl}/history/add-liked-post`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       user_id: sessionStorage.getItem("user_id"), // Récupérer l'identifiant de l'utilisateur depuis sessionStorage
+  //       job_post: job, // Envoyer les détails du poste dans job_post
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log("Liked successfully", data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error liking the job", error);
+  //     });
+  //   }    
+
+  // Handle window resize for mobile view
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 900);
       if (window.innerWidth > 900) {
-        setIsTableVisible(true); // Afficher le tableau sur les grands écrans
+        setIsTableVisible(true);
       }
     };
     window.addEventListener("resize", handleResize);
@@ -39,7 +77,8 @@ const RstMatching = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  // Charger les résultats lorsque region ou platform est disponible
+
+  // Load results when region or platform is available
   useEffect(() => {
     setIsLoading(true);
     let storedResults = null;
@@ -56,68 +95,101 @@ const RstMatching = () => {
         setResult([]);
       }
     }
-
     setIsLoading(false);
   }, [resultType, region, platform]);
-  const handleLetterCoverClick = (job) => {
-    setSelectedCoverLetter(job);
-    if (isMobile) {
-      setIsTableVisible(false); // Masquer le tableau sur mobile
-    }
-  };  // Déclencher une nouvelle prédiction lorsque platform ou region change
+
+  // Detect changes in platform or region
   useEffect(() => {
     if (
       (platform && platform !== prevPlatform) ||
       (region && region !== prevRegion)
     ) {
-      // Mettre à jour les anciennes valeurs
+      // Update previous values
       setPrevPlatform(platform);
       setPrevRegion(region);
+
+      // Reset matching states to trigger re-processing
       setIsChanged(true);
       setIsChanged2(true);
 
-
-      // Mettre à jour sessionStorage avec les nouvelles valeurs
+      // Update sessionStorage with new values
       sessionStorage.setItem("platform", platform);
       sessionStorage.setItem("region", region);
 
-      // Simuler un clic sur le bouton de retour
-      if (backButtonRef.current) {
-        backButtonRef.current.click();
-      }
+      // Navigate back to /SmartMatching
+      navigate("/SmartMatching");
     }
-  }, [platform, region]);
+  }, [
+    platform,
+    region,
+    prevPlatform,
+    prevRegion,
+    navigate,
+    setIsChanged,
+    setIsChanged2,
+  ]);
+
+  const handleLetterCoverClick = (job) => {
+    setSelectedCoverLetter(job);
+    if (isMobile) {
+      setIsTableVisible(false);
+    }
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  
   const renderStars = (similarityValue, index) => {
     const totalStars = 5;
     const starRating = similarityValue * totalStars;
     const fullStars = Math.floor(starRating);
     const hasHalfStar = starRating - fullStars >= 0.5;
     const emptyStars = totalStars - fullStars - (hasHalfStar ? 1 : 0);
-
+  
     return (
       <Box
         className="prefix-star-container"
-        sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-        onClick={() => handleToggleMatchingSkills(index)} // Ajouter l'action au clic ici
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          // justifyContent: "space-between", // Sépare les étoiles et le cœur
+          width: "100%", 
+        }}
       >
-        {Array.from({ length: fullStars }, (_, i) => (
-          <Star key={`full-${i}`} sx={{ color: "#FFD700", fontSize: "20px" }} />
-        ))}
-        {hasHalfStar && (
-          <StarHalf sx={{ color: "#FFD700", fontSize: "20px" }} />
-        )}
-        {Array.from({ length: emptyStars }, (_, i) => (
-          <StarBorder
-            key={`empty-${i}`}
-            sx={{ color: "#E0E0E0", fontSize: "20px" }}
-          />
-        ))}
+        {/* Conteneur des étoiles */}
+        <Box
+          sx={{ display: "flex", cursor: "pointer" }}
+          onClick={() => handleToggleMatchingSkills(index)} // Clic sur les étoiles uniquement
+        >
+          {Array.from({ length: fullStars }, (_, i) => (
+            <Star key={`full-${i}`} sx={{ color: "#FFD700", fontSize: "20px" }} />
+          ))}
+          {hasHalfStar && (
+            <StarHalf sx={{ color: "#FFD700", fontSize: "20px" }} />
+          )}
+          {Array.from({ length: emptyStars }, (_, i) => (
+            <StarBorder
+              key={`empty-${i}`}
+              sx={{ color: "#E0E0E0", fontSize: "20px" }}
+            />
+          ))}
+        </Box>
+  
+        {/* Conteneur du cœur (Like) */}
+        {/* <Box
+          sx={{ cursor: "pointer" }} // Indique que le cœur est cliquable
+          onClick={(e) => {
+            e.stopPropagation(); // Empêche le clic de se propager aux étoiles
+            handleLikeClick(job, index); // Clic uniquement sur le cœur
+          }}
+        >
+          {likedRows[index] ? (
+            <Favorite sx={{ color: "red", fontSize: "20px" }} />
+          ) : (
+            <FavoriteBorder sx={{ color: "#FFD700", fontSize: "20px" }} />
+          )}
+        </Box> */}
       </Box>
     );
   };
@@ -126,10 +198,11 @@ const RstMatching = () => {
     setIsTableVisible(true);
     setSelectedCoverLetter(null);
   };
+
   const handleToggleMatchingSkills = (index) => {
     setShowMatchingSkills((prevState) => ({
       ...prevState,
-      [index]: !prevState[index], // Toggle the visibility
+      [index]: !prevState[index],
     }));
   };
 
@@ -169,16 +242,16 @@ const RstMatching = () => {
                 const similarityValue = (job?.["Similarity (%)"] ?? 50) / 100;
                 return (
                   <Box
-                  
                     key={index}
                     className="prefix-job-result-row"
                     sx={{
                       borderColor: `rgba(34, 197, 94, ${similarityValue})`,
-                      flexDirection: isMobile || selectedCoverLetter ? "column" : "row",
+                      flexDirection:
+                        isMobile || selectedCoverLetter ? "column" : "row",
                     }}
                   >
                     <Box className="prefix-job-result-block">
-                      {renderStars(similarityValue, index)}
+                      {renderStars(similarityValue, index, job)}
                       <Typography
                         variant="h6"
                         className="prefix-job-title-icon"
@@ -203,7 +276,7 @@ const RstMatching = () => {
                         <Button
                           className="prefix-button"
                           variant="contained"
-                          onClick={() => handleLetterCoverClick(job)} // Select the job to display cover letter
+                          onClick={() => handleLetterCoverClick(job)}
                           style={{ marginTop: "10px" }}
                         >
                           View Cover Letter
@@ -269,7 +342,9 @@ const RstMatching = () => {
                             ) : null;
                           })
                         ) : (
-                          <Typography variant="body2" className="nacolor">N/A</Typography>
+                          <Typography variant="body2" className="nacolor">
+                            N/A
+                          </Typography>
                         )}
                       </ul>
                     </Box>
@@ -299,7 +374,7 @@ const RstMatching = () => {
                   </button>
                 )}
 
-                {/* Bouton de retour sur mobile */}
+                {/* Back button for mobile */}
                 {isMobile && (
                   <button className="back-button" onClick={handleBackToTable}>
                     &lt;
@@ -308,11 +383,12 @@ const RstMatching = () => {
 
                 <Typography variant="h6">Cover Letter:</Typography>
 
-                  <CoverLetter
-                    coverLetter={
-                      selectedCoverLetter?.cover_letter || "No cover letter available"
-                    }
-                  />
+                <CoverLetter
+                  coverLetter={
+                    selectedCoverLetter?.cover_letter ||
+                    "No cover letter available"
+                  }
+                />
               </Box>
             )}
           </Box>
@@ -356,11 +432,7 @@ const RstMatching = () => {
 
         <Box mt={4} sx={{ display: "flex", justifyContent: "center" }}>
           <Link to="/SmartMatching">
-            <Button
-              variant="contained"
-              className="prefix-button2"
-              ref={backButtonRef}
-            >
+            <Button variant="contained" className="prefix-button2">
               Back to Matching
             </Button>
           </Link>

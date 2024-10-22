@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { AppContext } from "../../AppContext";
-import { ClipLoader } from "react-spinners";
+import CircularProgress from '@mui/material/CircularProgress'; // Import spinner
 import WarningIcon from "@mui/icons-material/Warning";
 import {
   Box,
@@ -31,11 +31,12 @@ const PlatformPage = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
 
   const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+  
 
   const fetchData = async (platformToFetch, regionToFetch) => {
     setLoading(true);
     try {
-      const response = await fetch(`${baseUrl}/retrieve-file-with-summarize`, {
+      const response = await fetch(`${baseUrl}/retrieval/file-with-summarize`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -125,19 +126,10 @@ const PlatformPage = () => {
       width="100%"
     >
       {/* Conteneur du tableau */}
-      {/* Conteneur du tableau */}
       {loading ? (
-        <Box className="table-container">
-          <Box
-            display="flex"
-            width="210vh"
-            className="spinner"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <ClipLoader color="#171C3F" loading={loading} />
-          </Box>
-        </Box>
+        <div className="spinner-container">
+        <CircularProgress sx={{ color: '#171C3F' }} />
+      </div>
       ) : filteredData.length === 0 ? (
         // Afficher une erreur si les données sont vides
         <Box
@@ -266,8 +258,10 @@ const PlatformPage = () => {
             </button>
           )}
 
-          <Typography variant="h6">More details:</Typography>
-
+          <Typography component="h6" variant="h6">
+            More details:
+          </Typography>
+          
           <Typography>
             <JobDetails selectedJob={selectedJob} />
           </Typography>

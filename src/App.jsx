@@ -6,8 +6,10 @@ import ProtectedRoute from './auth/ProtedtedRoute';
 import PlatformPage from './components/PlatformPage/PlatformPage';
 import SmartFilter from './components/SmartFilter/SmartFilter';
 import RstMatching from './components/RstMatching/RstMatching';
+import HistoryRslts from './components/HistoryRslts/HistoryRslts'; // Import the new component
 import ErrorPage from './components/ErrorPage/ErrorPage';
 import React, { useEffect } from 'react';
+import ListOfLikes from './components/ListOfLikes/ListOfLikes';
 
 function App() {
   const location = useLocation(); // Get the current location
@@ -15,7 +17,9 @@ function App() {
   const validPaths = [
     '/PlatformPage',
     '/SmartMatching',
-    '/rslts00'
+    '/rslts00',
+    '/ListOfLikes',
+    '/historyRslts' // Add new valid path for HistoryRslts
   ];
 
   const isValidPath = validPaths.includes(location.pathname);
@@ -70,10 +74,26 @@ function App() {
             }
           />
           <Route
+            path="/ListOfLikes"
+            element={
+              <ProtectedRoute>
+                <ListOfLikes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/rslts00"
             element={
               <ProtectedRoute>
                 <RstMatching />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/historyRslts"
+            element={
+              <ProtectedRoute>
+                <HistoryRslts /> {/* Add the new component here */}
               </ProtectedRoute>
             }
           />

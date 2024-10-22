@@ -125,6 +125,24 @@
 .backButton {
   background-color: transparent;
 }
+.iconAndEmail {
+  display: flex;
+  align-items: center;  /* Align the icon and text vertically */
+  margin-bottom: 10px;  /* Space between the icon/email and input */
+}
+
+.outsideIcon {
+  cursor: pointer;
+  margin-right: 10px;  /* Space between arrow and email */
+  font-size: 20px;  /* Adjust icon size */
+  color: #333;
+}
+
+.emailText {
+  font-size: 18px;
+  color: #171C3F;
+  font-weight: bold;
+}
 
 .submitBtn:hover {
   background-color: #171C3F;

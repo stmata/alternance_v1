@@ -38,7 +38,13 @@
     transition: color 0.3s ease;
   }
 
-  
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;       /* Adjust as needed */
+    height: 100vh;     /* Full viewport height, adjust if necessary */
+  }
   
   .close-button:hover {
     color: red; /* Change color on hover */

@@ -27,7 +27,12 @@
     font-weight: bold;
     color: red;
   }
-  
+  .job-title-like-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
 .job-list-item {
     margin-left: 20px;
     margin-bottom: 8px;
