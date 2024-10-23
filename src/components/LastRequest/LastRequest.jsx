@@ -27,7 +27,7 @@ const LastRequest = () => {
     navigate('/historyRslts', { state: { predictJobs: request.predict_jobs } });
   };
 
-  // Déplacer la fonction fetchLastRequests en dehors de l'useEffect
+  // Function to fetch the last requests
   const fetchLastRequests = async () => {
     const user_id = sessionStorage.getItem("user_id");
     if (!user_id) {
@@ -37,7 +37,7 @@ const LastRequest = () => {
     }
 
     try {
-      setIsLoading(true); // Commence le chargement
+      setIsLoading(true); // Start loading
       const response = await fetch(
         `${baseUrl}/history/get-prediction-history`,
         {
@@ -69,20 +69,20 @@ const LastRequest = () => {
       console.error("Error fetching last requests:", error);
       setRequests([]);
     } finally {
-      setIsLoading(false); // Termine le chargement
+      setIsLoading(false); // End loading
     }
   };
 
-  // useEffect pour charger les données lors du montage du composant
+  // useEffect to load data when the component mounts
   useEffect(() => {
     fetchLastRequests();
   }, []);
 
-  // Nouvel useEffect pour écouter les changements de new_data_added
+  // useEffect to listen for changes in new_data_added
   useEffect(() => {
     if (new_data_added) {
       fetchLastRequests();
-      setNewDataAdded(false); // Réinitialise new_data_added à false
+      setNewDataAdded(false); // Reset new_data_added to false
     }
   }, [new_data_added]);
 
@@ -115,7 +115,7 @@ const LastRequest = () => {
   if (isLoading) {
     // While loading, display the spinner
     return (
-        <Box
+      <Box
         display="flex"
         justifyContent="center"
         alignItems="flex-start" // Aligns spinner to the top vertically
@@ -127,6 +127,12 @@ const LastRequest = () => {
     );
   }
 
+  // If there are no requests, return null (render nothing)
+  if (requests.length === 0) {
+    return null;
+  }
+
+  // Render the component if there are requests
   return (
     <Box
       className="carousel-container"
@@ -134,104 +140,96 @@ const LastRequest = () => {
       flexDirection="column"
       alignItems="center"
     >
-      {requests.length > 0 ? (
-        <>
-          <Box className="carousel" display="flex" justifyContent="center">
-            {requests.map((request, index) => {
-              const isActive = index === currentIndex;
+      <Box className="carousel" display="flex" justifyContent="center">
+        {requests.map((request, index) => {
+          const isActive = index === currentIndex;
 
-              return (
-                isActive && (
-                  <Box
-                    key={index}
-                    className={`carousel-item ${isActive ? "active" : ""}`}
-                    onClick={() => handleLastRequestClick(request)}
-                    display="flex"
-                    flexDirection="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    width="100%"
-                  >
-                    {/* Left Side: Platform Image */}
-                    <Box width="40%">
-                      <img
-                        src={getPlatformImage(request.platform)}
-                        alt={request.platform}
-                        className="platform-logo"
-                      />
-                    </Box>
-
-                    {/* Right Side: Request Information */}
-                    <Box width="60%" className="right-info">
-                      <Typography className="date-time">
-                        {request.added_date}
-                      </Typography>
-
-                      <Box
-                        className="file-promptt"
-                        display="flex"
-                        alignItems="center"
-                      >
-                        {request.filename ? (
-                          <>
-                            <FaFileAlt className="file-icon" />
-                            <Typography variant="body1" className="file-prompt">
-                              {request.filename}
-                            </Typography>
-                          </>
-                        ) : (
-                          <>
-                            <FaRegFileAlt className="prompt-icon" />
-                            <Typography variant="body1" className="file-prompt">
-                              {request.textSummary}
-                            </Typography>
-                          </>
-                        )}
-                      </Box>
-
-                      <Box display="flex" alignItems="center">
-                        <MdLocationOn className="region-icon" />
-                        <Typography variant="body1" className="file-prompt">
-                          {request.region}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                )
-              );
-            })}
-          </Box>
-
-          <Box
-            className="carousel-pagination"
-            display="flex"
-            alignItems="center"
-            mt={2}
-          >
-            <IconButton onClick={goPrev}>
-              <ArrowBackIos />
-            </IconButton>
-
-            {requests.map((_, index) => (
+          return (
+            isActive && (
               <Box
                 key={index}
-                className={`carousel-dot ${
-                  index === currentIndex ? "active" : ""
-                }`}
-                onClick={() => setCurrentIndex(index)}
-              />
-            ))}
+                className={`carousel-item ${isActive ? "active" : ""}`}
+                onClick={() => handleLastRequestClick(request)}
+                display="flex"
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="space-between"
+                width="100%"
+              >
+                {/* Left Side: Platform Image */}
+                <Box width="40%">
+                  <img
+                    src={getPlatformImage(request.platform)}
+                    alt={request.platform}
+                    className="platform-logo"
+                  />
+                </Box>
 
-            <IconButton onClick={goNext}>
-              <ArrowForwardIos />
-            </IconButton>
-          </Box>
-        </>
-      ) : (
-        <Typography variant="body1" color="white">
-          Aucune requête récente à afficher.
-        </Typography>
-      )}
+                {/* Right Side: Request Information */}
+                <Box width="60%" className="right-info">
+                  <Typography className="date-time">
+                    {request.added_date}
+                  </Typography>
+
+                  <Box
+                    className="file-promptt"
+                    display="flex"
+                    alignItems="center"
+                  >
+                    {request.filename ? (
+                      <>
+                        <FaFileAlt className="file-icon" />
+                        <Typography variant="body1" className="file-prompt">
+                          {request.filename}
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
+                        <FaRegFileAlt className="prompt-icon" />
+                        <Typography variant="body1" className="file-prompt">
+                          {request.textSummary}
+                        </Typography>
+                      </>
+                    )}
+                  </Box>
+
+                  <Box display="flex" alignItems="center">
+                    <MdLocationOn className="region-icon" />
+                    <Typography variant="body1" className="file-prompt">
+                      {request.region}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            )
+          );
+        })}
+      </Box>
+
+      <Box
+        className="carousel-pagination"
+        display="flex"
+        alignItems="center"
+        mt={2}
+      >
+        <IconButton onClick={goPrev}>
+          <ArrowBackIos />
+        </IconButton>
+
+        {requests.map((_, index) => (
+          <Box
+            key={index}
+            className={`carousel-dot ${
+              index === currentIndex ? "active" : ""
+            }`}
+            onClick={() => setCurrentIndex(index)}
+          />
+        ))}
+
+        <IconButton onClick={goNext}>
+          <ArrowForwardIos />
+        </IconButton>
+      </Box>
     </Box>
   );
 };

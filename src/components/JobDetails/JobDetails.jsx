@@ -15,9 +15,9 @@ const JobDetails = ({ selectedJob }) => {
   const [likedRows, setLikedRows] = useState({}); // Store the like state for each post based on the unique identifier
   const userId = sessionStorage.getItem("user_id");
 
-  // Generate a unique identifier based on Title, Company, and Location
+  // Use job.Url as the unique identifier
   const generateUniqueId = (job) => {
-    return `${job.Title}-${job.Company}-${job.Location}`;
+    return job.Url;
   };
 
   const currentJobId = generateUniqueId(selectedJob); // Generate ID for the current job
@@ -60,34 +60,63 @@ const JobDetails = ({ selectedJob }) => {
     fetchLikedPosts();
   }, [baseUrl, userId]);
 
-  // Handle liking the job
+  // Handle liking and unliking the job
   const handleLikeClick = (job) => {
     const jobId = generateUniqueId(job); // Use the unique identifier for this job
 
-    // Set the job as liked in the state
-    setLikedRows((prevState) => ({
-      ...prevState,
-      [jobId]: true, // Set this specific job as liked
-    }));
+    if (likedRows[jobId]) {
+      // Job is already liked, so unlike it
+      // Update state
+      setLikedRows((prevState) => ({
+        ...prevState,
+        [jobId]: false, // Set this specific job as unliked
+      }));
 
-    // Send the like status to the backend
-    fetch(`${baseUrl}/history/add-liked-post`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: userId,
-        job_post: job, // Send job details
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Liked successfully", data);
+      // Send the unlike status to the backend
+      fetch(`${baseUrl}/history/remove-liked-post`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          job_post_url: job.Url,
+        }),
       })
-      .catch((error) => {
-        console.error("Error liking the job", error);
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Unliked successfully", data);
+        })
+        .catch((error) => {
+          console.error("Error unliking the job", error);
+        });
+    } else {
+      // Job is not liked, so like it
+      // Set the job as liked in the state
+      setLikedRows((prevState) => ({
+        ...prevState,
+        [jobId]: true, // Set this specific job as liked
+      }));
+
+      // Send the like status to the backend
+      fetch(`${baseUrl}/history/add-liked-post`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          job_post: job, // Send job details
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Liked successfully", data);
+        })
+        .catch((error) => {
+          console.error("Error liking the job", error);
+        });
+    }
   };
 
   const renderList = (content) => {
@@ -110,15 +139,16 @@ const JobDetails = ({ selectedJob }) => {
         </Typography>
 
         <Box>
-          {/* Conditionally render the like icon based on the unique identifier */}
+          {/* Add onClick handler to both icons to allow toggling */}
           {likedRows[currentJobId] ? (
             <Favorite
               sx={{ color: "red", fontSize: "30px", cursor: "pointer" }}
+              onClick={() => handleLikeClick(selectedJob)} // Handle unlike action
             />
           ) : (
             <FavoriteBorder
               sx={{ color: "#FFD700", fontSize: "30px", cursor: "pointer" }}
-              onClick={() => handleLikeClick(selectedJob)} // Handle like action for this specific job
+              onClick={() => handleLikeClick(selectedJob)} // Handle like action
             />
           )}
         </Box>

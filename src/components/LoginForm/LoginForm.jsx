@@ -1,11 +1,17 @@
-import { useState, useEffect, useContext } from 'react';
-import { FaUser, FaArrowLeft, FaHourglassHalf, FaLock, FaSyncAlt } from 'react-icons/fa';
-import styles from './LoginPage.module.css';
-import { useNavigate } from 'react-router-dom';
-import { AppContext } from '../../AppContext';
+import { useState, useEffect, useContext } from "react";
+import {
+  FaUser,
+  FaArrowLeft,
+  FaHourglassHalf,
+  FaLock,
+  FaSyncAlt,
+} from "react-icons/fa";
+import styles from "./LoginPage.module.css";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../../AppContext";
 
 const useTypewriterEffect = (text, duration) => {
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState("");
   useEffect(() => {
     const totalChars = text.length;
     const timePerChar = duration / totalChars;
@@ -15,16 +21,17 @@ const useTypewriterEffect = (text, duration) => {
       setDisplayedText(text.slice(0, index));
       if (index === totalChars) clearInterval(intervalId);
     }, timePerChar);
-    
+
     return () => clearInterval(intervalId);
   }, [text, duration]);
   return displayedText;
 };
 
 const LoginForm = () => {
-  const {email, setEmail,isAuthenticated, setIsAuthenticated } = useContext(AppContext);
-  const [code, setCode] = useState('');
-  const [error, setError] = useState('');
+  const { email, setEmail, isAuthenticated, setIsAuthenticated } =
+    useContext(AppContext);
+  const [code, setCode] = useState("");
+  const [error, setError] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
@@ -32,20 +39,27 @@ const LoginForm = () => {
   const [wrongCode, setWrongCode] = useState(false);
   const navigate = useNavigate();
   const [isSkemaDomain, setIsSkemaDomain] = useState(true);
-  const baseUrl = import.meta.env.VITE_APP_BASE_URL; 
-  const fullText = "Welcome to the SKEMA Application Alternance.\n Discover job opportunities that match your skills with the power of AI. \n Enhance your CV with personalized recommendations and create tailored cover letters for your desired positions. \n Start your journey towards the perfect job! ";
-  
+  const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+  const fullText =
+    "Welcome to the SKEMA Application Alternance.\n Discover job opportunities that match your skills with the power of AI. \n Enhance your CV with personalized recommendations and create tailored cover letters for your desired positions. \n Start your journey towards the perfect job! ";
+
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const textToDisplay = isSmallScreen ? fullText : fullText;
+
   const isValidEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    
     if (!emailRegex.test(email)) {
-        return false;
+      return false;
     }
- 
-    return email.endsWith('@skema.edu');
-}
+    return email.endsWith("@skema.edu");
+  };
+
+  // Clear email and code when the component mounts (e.g., after logout)
+  useEffect(() => {
+    setEmail("");
+    setCode("");
+  }, []);
+
   useEffect(() => {
     let timer;
     if (isCodeSent && !isConfirmed && countdown > 0) {
@@ -61,7 +75,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/PlatformPage');
+      navigate("/PlatformPage");
     }
   }, [isAuthenticated, navigate]);
 
@@ -69,9 +83,9 @@ const LoginForm = () => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 480);
     };
-    handleResize(); 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const displayedText = useTypewriterEffect(textToDisplay, 15000);
@@ -79,93 +93,60 @@ const LoginForm = () => {
   const sendVerificationCode = async (email) => {
     try {
       const response = await fetch(`${baseUrl}/auth/send-verification-code`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to send verification code');
+        throw new Error("Failed to send verification code");
       }
-      
+
       return true;
     } catch (error) {
-      setError('Failed to send verification code. Please try again.');
+      setError("Failed to send verification code. Please try again.");
       return false;
     }
   };
 
-  // const registerUser = async (email) => {
-  //   try {
-  //     const response = await fetch(`http://127.0.0.1:8000/register-user`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ email }),
-  //     });
-  
-  //     if (!response.ok) {
-  //       throw new Error('Failed to register user');
-  //     }
-  
-  //     const data = await response.json();
-  
-  //     // Assuming the response contains the user_id
-  //     const userId = data.user_id;
-      
-  //     if (userId) {
-  //       // Store user_id in sessionStorage
-  //       sessionStorage.setItem('user_id', userId);
-  //       console.log('User registered successfully, user_id saved in sessionStorage');
-  //     } else {
-  //       throw new Error('User ID not found in response');
-  //     }
-  
-  //   } catch (error) {
-  //     console.error('Error registering user:', error);
-  //   }
-  // };
-  
-
   const verifyCode = async (email, code) => {
     try {
       const response = await fetch(`${baseUrl}/auth/verify-code`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, code }),
       });
-      
+
       const data = await response.json();
 
       if (data.statut === true && data.user_id) {
         // Store user_id in sessionStorage instead of email
-        sessionStorage.setItem('user_id', data.user_id);
+        sessionStorage.setItem("user_id", data.user_id);
 
         return true;
       }
-  
+
       return false;
-      } catch (error) {
-      console.error('Error verifying code:', error);
+    } catch (error) {
+      console.error("Error verifying code:", error);
       return false;
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); 
-  
+    setError("");
+
     if (!isValidEmail(email)) {
-      setIsSkemaDomain(false)
-      setError('Please use SKEMA email!');
+      setIsSkemaDomain(false);
+      setError("Please use SKEMA email!");
       return;
     }
-    
+
     if (!isCodeSent) {
       const codeSent = await sendVerificationCode(email);
       if (codeSent) {
@@ -180,45 +161,40 @@ const LoginForm = () => {
         setIsConfirmed(true);
         setWrongCode(false);
 
-        sessionStorage.setItem('userEmail', email);
+        sessionStorage.setItem("userEmail", email);
         // Naviguer vers la page platform
-        navigate('/PlatformPage');
-  
-        // Appel POST pour enregistrer l'email dans la base de données
-        // await registerUser(email);
+        navigate("/PlatformPage");
       } else {
         setWrongCode(true);
-        setError('Wrong code. Please try again.');
+        setError("Wrong code. Please try again.");
       }
     }
   };
-  
 
   const handleResendCode = async () => {
     const codeSent = await sendVerificationCode(email);
-      if (codeSent) {
-        setCountdown(60);
+    if (codeSent) {
+      setCountdown(60);
       setCanResend(false);
       setIsConfirmed(false);
       setWrongCode(false);
-      }
+    }
   };
+
   const handleReset = () => {
-    setEmail('');
-    setCode('');
+    setEmail("");
+    setCode("");
     setIsCodeSent(false);
     setCountdown(60);
     setCanResend(false);
     setIsConfirmed(false);
-    setWrongCode(false);  // Reset the wrong code error state
-    setError('');  // Reset the general error state
+    setWrongCode(false);
+    setError("");
   };
 
   return (
     <div className={styles.loginContainer}>
-      <div className={styles.animatedText}>
-        {displayedText}
-      </div>
+      <div className={styles.animatedText}>{displayedText}</div>
       <div className={styles.loginFormBox}>
         <div className={styles.formHeader}>
           <h2 className={styles.formTitle}>Login :</h2>
@@ -233,7 +209,7 @@ const LoginForm = () => {
                 className={styles.inputField}
                 placeholder="Enter your SKEMA mail"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.toLowerCase())} // Convert to lowercase
                 required
               />
               <FaUser className={styles.inputIcon} size={20} />
@@ -244,67 +220,64 @@ const LoginForm = () => {
           {isCodeSent && (
             <div className={styles.inputContainer}>
               <div className={styles.iconAndEmail}>
-                <FaArrowLeft 
-                  onClick={handleReset} 
-                  className={styles.outsideIcon} 
-                  size={20} 
+                <FaArrowLeft
+                  onClick={handleReset}
+                  className={styles.outsideIcon}
+                  size={20}
                 />
-                <span className={styles.emailText}>{email}</span>
+                <span className={styles.emailText}>{email.toLowerCase()}</span>
               </div>
-
-            <div className={styles.inputGroup}>
-              <input
-                type="text"
-                id="code"
-                className={styles.inputField}
-                placeholder="Enter the code received via email"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                required
-              />
-              <FaLock className={styles.inputIcon} size={20} />
-            </div>
+              <div className={styles.inputGroup}>
+                <input
+                  type="text"
+                  id="code"
+                  className={styles.inputField}
+                  placeholder="Enter the code received via email"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  required
+                />
+                <FaLock className={styles.inputIcon} size={20} />
+              </div>
             </div>
           )}
 
-          
-          {/* {error && <p className={styles.errorText}>{error}</p>} */}
-
           <button type="submit" className={styles.submitBtn}>
-            {isCodeSent ? 'Confirm' : 'Login'}
+            {isCodeSent ? "Confirm" : "Login"}
           </button>
         </form>
         {!isCodeSent && !isSkemaDomain && (
-            <div className={styles.errorText}>{error}</div>
+          <div className={styles.errorText}>{error}</div>
         )}
         {isCodeSent && wrongCode && (
-            <div className={styles.errorText}>Wrong code. Please try again!</div>
-          )}
+          <div className={styles.errorText}>Wrong code. Please try again!</div>
+        )}
 
         {/* Timer for code resend */}
         {isCodeSent && !isConfirmed && (
-          <div className={styles.actionGroup} style={{ marginTop: '1rem' }}>
+          <div className={styles.actionGroup} style={{ marginTop: "1rem" }}>
             {canResend ? (
               <button
                 onClick={handleResendCode}
                 className={styles.resendCodeBtn}
               >
                 Resend code
-                <FaSyncAlt className={styles.resendIcon} size={14} style={{ marginLeft: '5px' }} />
-                
+                <FaSyncAlt
+                  className={styles.resendIcon}
+                  size={14}
+                  style={{ marginLeft: "5px" }}
+                />
               </button>
             ) : (
-              <div className={styles.timerContainer}> {/* Added container div */}
-                <FaHourglassHalf 
-                  className={styles.timeIcon} 
-                  size={20} 
-                />
-                <p className={styles.countdownText}>{countdown} seconds remaining</p>
+              <div className={styles.timerContainer}>
+                <FaHourglassHalf className={styles.timeIcon} size={20} />
+                <p className={styles.countdownText}>
+                  {countdown} seconds remaining
+                </p>
               </div>
             )}
           </div>
         )}
-
       </div>
     </div>
   );

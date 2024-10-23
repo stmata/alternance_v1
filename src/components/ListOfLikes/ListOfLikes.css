@@ -76,6 +76,12 @@
       
 }
 
+.nolikedPosts{
+    font-size: 20px;
+    color: red;
+    text-align: center;
+}
+
 .spinner-container {
     display: flex;
     justify-content: center;
