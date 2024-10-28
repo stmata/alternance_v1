@@ -4,6 +4,9 @@ import { AppContext } from '../../AppContext';
 import './SmartFilter.css';
 import { InsertDriveFile } from '@mui/icons-material';
 import LastRequest from '../LastRequest/LastRequest';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n'; // Importez i18n pour manipuler la langue
+
 
 const SmartFilter = () => {
   const {
@@ -29,8 +32,16 @@ const SmartFilter = () => {
   const [isLoadingFile, setIsLoadingFile] = useState(false);
   const [isLoadingText, setIsLoadingText] = useState(false);
   const [fileName, setFileName] = useState(null);
-
+  const { t} = useTranslation();
   const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+
+  useEffect(() => {
+    // Charger la langue depuis sessionStorage si elle existe
+    const storedLanguage = sessionStorage.getItem('language') || 'fr';
+    if (i18n.language !== storedLanguage) {
+      i18n.changeLanguage(storedLanguage); // Met à jour i18n pour utiliser la langue stockée
+    }
+  }, []);
 
   // Load stored data from sessionStorage
   useEffect(() => {
@@ -93,50 +104,6 @@ const SmartFilter = () => {
       .replace(/-/g, '_');
   };
 
-  // Save the last request after prediction
-  // const saveLastRequest = async (
-  //   summary,
-  //   results,
-  //   type,
-  //   fileName = null,
-  //   promptText = null,
-  //   region,
-  //   platform
-  // ) => {
-  //   const user_id = sessionStorage.getItem('user_id');
-  //   console.log(user_id)
-  //   if (!user_id || !summary || !results || !type || !platform || !region) {
-  //     console.error('Missing data for saving last request');
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch(`http://127.0.0.1:8000/add-last-request`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         file_name: type === 'cv' ? fileName : null,
-  //         prompt_text: type === 'prompt' ? promptText : null,
-  //         type: type,
-  //         summary: summary,
-  //         results: results,
-  //         user_id: user_id,  // Ensure user_id is correctly passed as a string
-  //         region: region,
-  //         platform: platform,
-  //       }),
-      
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error('Failed to save last request');
-  //     }
-  //     console.log('Last request saved successfully.');
-  //   } catch (error) {
-  //     console.error('Error saving last request:', error);
-  //   }
-  // };
 
   // Handle prediction after summarization
   const handlePredict = async (summary, type) => {
@@ -152,9 +119,6 @@ const SmartFilter = () => {
         setIsLoadingText(true);
       }
 
-      console.log(
-        `Predicting for ${type}: Platform - ${platform}, Region - ${region}, Summary - ${summary}`
-      );
       // Prepare request body
       const requestBody = {
         platform: normalizeString(platform),
@@ -167,14 +131,13 @@ const SmartFilter = () => {
     
     
       // Send the request
-      const response = await fetch(`${baseUrl}/analytics/predict_summary`, {
+      const response = await fetch(`${baseUrl}/analytics/predict-summary`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(requestBody),
       });
-
       if (response.ok) {
         const data = await response.json();
         setNewDataAdded(true);
@@ -226,7 +189,6 @@ const SmartFilter = () => {
       const formData = new FormData();
       formData.append('file', selectedFile);
       try {
-        console.log('Summarizing file...');
         const response = await fetch(`${baseUrl}/summarize/file`, {
           method: 'POST',
           body: formData,
@@ -238,7 +200,6 @@ const SmartFilter = () => {
           setIsFileSummarized(true);
           setIsChanged(true);
           sessionStorage.setItem('isFileSummarized', 'true');
-          console.log('File summarized successfully');
         } else {
           throw new Error('Failed to summarize the file.');
         }
@@ -250,7 +211,6 @@ const SmartFilter = () => {
       }
     } else if (isFileSummarized) {
       const savedFileSummary = sessionStorage.getItem('fileSummary');
-      console.log('File already summarized, triggering prediction.');
       setIsChanged(true);
       await handlePredict(savedFileSummary, 'cv');
     }
@@ -261,7 +221,6 @@ const SmartFilter = () => {
     if (promptText.trim() && !isTextSummarized) {
       setIsLoadingText(true);
       try {
-        console.log('Summarizing text...');
         const response = await fetch(`${baseUrl}/summarize/text`, {
           method: 'POST',
           headers: {
@@ -279,7 +238,6 @@ const SmartFilter = () => {
           setIsChanged2(true);
           sessionStorage.setItem('isTextSummarized', 'true');
           sessionStorage.setItem('savedPrompt', promptText);
-          console.log('Text summarized successfully');
         } else {
           throw new Error('Failed to summarize the text.');
         }
@@ -291,7 +249,6 @@ const SmartFilter = () => {
       }
     } else if (isTextSummarized) {
       const savedTextSummary = sessionStorage.getItem('textSummary');
-      console.log('Text already summarized, triggering prediction.');
       setIsChanged2(true);
       await handlePredict(savedTextSummary, 'prompt');
     }
@@ -322,7 +279,6 @@ const SmartFilter = () => {
       platform &&
       region
     ) {
-      console.log('Triggering file prediction');
       setIsLoadingFile(true);
       handlePredict(savedFileSummary, 'cv');
       setIsChanged(false);
@@ -335,7 +291,6 @@ const SmartFilter = () => {
       platform &&
       region
     ) {
-      console.log('Triggering prompt prediction');
       setIsLoadingText(true)
       handlePredict(savedTextSummary, 'prompt');
       setIsChanged2(false);
@@ -353,16 +308,12 @@ const SmartFilter = () => {
     <div>
       <div className="smart-filter-container2">
       <div className="filter-section">
-        <h2>Upload Your Resume for Alternance Matches:</h2>
-        <p>
-          By uploading your CV to our advanced matching platform, you unlock a powerful tool designed
-          to thoroughly analyze your academic background, work experience, and unique skill set.
-          This enables the platform to provide highly personalized job matches, helping you take a
-          major step forward in your marketing career.
+        <h2>{t("title_CV")}</h2>
+        <p dangerouslySetInnerHTML={{ __html: t('description_CV') }}>
         </p>
 
         <div className="file-upload-form">
-          <h2 className="file-upload-title">Upload and attach files</h2>
+          <h2 className="file-upload-title">{t("input_file")}</h2>
           <div className="file-upload-box">
             <input
               type="file"
@@ -373,7 +324,7 @@ const SmartFilter = () => {
             />
             <label htmlFor="file" className="file-label">
               <InsertDriveFile className="upload-icon" />
-              {fileName ? fileName : 'Click to upload or drag and drop'}
+              {fileName ? fileName : t("btn_UpCV")}
             </label>
             {fileName && <p className="file-size">{fileName}</p>}
           </div>
@@ -385,7 +336,7 @@ const SmartFilter = () => {
         className={isLoadingFile ? 'disabled-button' : 'button-active'}
         disabled={isLoadingFile || !platform || !region}
      >
-      {isLoadingFile ? 'Processing...' : 'View CV Results'}
+      {isLoadingFile ? t("btn_processing") : t("btn_viewRslts")}
       </button>
           </Link>
         ) : (
@@ -403,23 +354,19 @@ const SmartFilter = () => {
             }
             onClick={handleStartMatching}
           >
-            {isLoadingFile ? 'Processing...' : 'Start Matching'}
+            {isLoadingFile ? t("btn_processing") : t("btn_StartM")}
           </button>
         )}
       </div>
       <div className="divider"></div>
       <div className="filter-section">
-        <h2>Enter Your Marketing Role Preferences:</h2>
-        <p>
-          Looking for your next marketing role? Simply enter your desired criteria into our
-          intelligent search system. Our AI-powered tool will match you with the best opportunities
-          tailored to your preferences. Start your search now and discover roles that fit your
-          skills and goals. Effortlessly find your perfect marketing job today!
+        <h2>{t("title_prompt")}</h2>
+        <p dangerouslySetInnerHTML={{ __html: t('description_prompt') }}>
         </p>
         <textarea
           value={promptText}
           onChange={handlePromptChange}
-          placeholder="Please provide a detailed description of the position you're seeking, including your desired job title, key skills, preferred responsibilities, and objectives for the role. The more specific and complete your input, the better we can match you with relevant alternance offers."
+          placeholder={t("input_prompt")}
         />
 
         {hasPromptResults ? (
@@ -428,7 +375,7 @@ const SmartFilter = () => {
      className={isLoadingText ? 'disabled-button' : 'button-active'}
     disabled={isLoadingText || !platform || !region}
    >
-      {isLoadingText ? 'Processing...' : 'View Prompt Results'}
+      {isLoadingText ? t("btn_processing") : t("btn_viewRsltsPr")}
     </button>
           </Link>
         ) : (
@@ -446,7 +393,7 @@ const SmartFilter = () => {
             }
             onClick={handleStartPrompt}
           >
-            {isLoadingText ? 'Processing...' : 'Start Matching'}
+            {isLoadingText ? t("btn_processing") : t("btn_StartM")}
           </button>
         )}
       </div>

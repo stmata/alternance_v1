@@ -373,3 +373,108 @@ table tbody tr:hover {
 }
 
 
+
+/* Mode sombre */
+.dark-mode {
+    --primary-color: #ffffff;
+    --secondary-color: #c0c0c0;
+    background-color: transparent !important;
+    color: var(--secondary-color);
+}
+
+.dark-mode .split-view-container {
+    background-color: transparent !important;
+}
+
+.dark-mode .spinner-container {
+    background-color: transparent;
+}
+
+.dark-mode .Warning {
+    background-color: #2a2a2a;
+    color: #ffcc00;
+}
+
+.dark-mode .close-button {
+    color: #ffffff;
+}
+
+.dark-mode .close-button:hover {
+    color: #ff5252;
+}
+
+.dark-mode .table-container {
+    background-color: transparent !important;
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode table {
+    background-color: #1e1e1e;
+    color: var(--primary-color);
+}
+
+.dark-mode th {
+    color: #e7433c !important;
+}
+
+.dark-mode td {
+    color: var(--secondary-color);
+}
+
+.dark-mode table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .view-job-btn {
+    background-color: #333 !important;
+    color: #ffffff;
+    border: 2px solid #333;
+}
+
+.dark-mode .view-job-btn:hover {
+    background-color: #ffffff;
+    color: white !important;
+    border: 2px solid #ffffff !important;
+
+}
+
+.dark-mode .details-container {
+    background-color: #1e1e1e;
+    color: var(--primary-color);
+}
+
+.dark-mode .details-container h6 {
+    color: #eaeaea;
+}
+
+.dark-mode .selected-job-container {
+    background-color: #1e1e1e;
+    color: var(--primary-color);
+}
+
+.dark-mode .selected-job-container h6 {
+    color: #ff5252;
+}
+
+.dark-mode .back-button {
+    color: #ffffff;
+    border: #ffffff solid 2px;
+}
+
+.dark-mode .back-button:hover {
+    color: #e7433c;
+    border: #e7433c solid 2px;
+}
+
+.dark-mode .MuiTablePagination-displayedRows {
+    color: #e7433c !important ;
+}
+.dark-mode .MuiTablePagination-actions .MuiIconButton-root {
+    color: #c0c0c0 !important; /* Couleur des icônes */
+    background-color: transparent;
+}
+
+.dark-mode .MuiTablePagination-actions .MuiIconButton-root:hover {
+    color: #e7433c !important; /* Couleur au survol */
+    background-color: transparent;
+}

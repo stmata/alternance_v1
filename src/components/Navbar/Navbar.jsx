@@ -7,15 +7,20 @@ import {
   faSearch,
   faLightbulb,
   faCog,
+  faPalette,
+  faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Navbar.css";
 import logo from "../../assets/logo.png";
-import { AppContext } from "../../AppContext"; // Import du contexte
-import { useNavigate, useLocation } from "react-router-dom"; // Import du hook useNavigate et useLocation
-import { Link } from "react-router-dom";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import logo_dark from "../../assets/logo_dark.png"
+import { AppContext } from "../../AppContext";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n"; // Importer i18n pour pouvoir le manipuler
 
 const Navbar = () => {
+  const { t } = useTranslation();
+  const email = sessionStorage.getItem("userEmail");
   const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,31 +46,54 @@ const Navbar = () => {
     setFirstVisitRegion,
     setIsChanged,
     setIsChanged2,
+    setTheme
   } = useContext(AppContext);
 
+  const [isDarkMode, setIsDarkMode] = useState(sessionStorage.getItem("theme") === "dark");
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode ? 'dark' : 'light';
+    setIsDarkMode((prevMode) => !prevMode);
+    setTheme(newTheme); // Mettez à jour le thème dans App.js
+    sessionStorage.setItem("theme", newTheme);
+    document.body.classList.toggle("dark-mode", newTheme === "dark"); // Met à jour la classe du body
+  };
+  useEffect(() => {
+    const storedTheme = sessionStorage.getItem("theme") || "light";
+    setIsDarkMode(storedTheme === "dark");
+  }, []);
+
+  
+  useEffect(() => {
+    // Récupère la langue depuis sessionStorage au chargement
+    const storedLanguage = sessionStorage.getItem("language") || "fr";
+    if (i18n.language !== storedLanguage) {
+      i18n.changeLanguage(storedLanguage); // Met à jour i18n pour utiliser la langue de session
+    }
+  }, []);
   const navigate = useNavigate();
-  const location = useLocation(); // Get the current route
+  const location = useLocation();
   const platformRef = useRef(null);
   const locationRef = useRef(null);
   const menuRef = useRef(null);
+  const initialsRef = useRef(null); // Ref for initials circle
+  const initialsDropdownRef = useRef(null); // Ref for dropdown menu
 
-  // Fonction pour gérer l'ouverture/fermeture du menu
-  const toggleMenu = () => {
-    setIsMenuOpen((prev) => !prev); // Toggle du menu
+  
+  const getInitials = (email) => {
+    const nameParts = email.split("@")[0].split(".");
+    return nameParts.map((part) => part[0].toUpperCase()).join("");
   };
 
-  // Fonction pour gérer la déconnexion
   const handleLogout = () => {
-    // Reset values in the AppContext
-    setPlatform("apec"); // Reset to default platform
-    setRegion("ile_de_france"); // Reset to default region
-    setFileSummary(""); // Clear fileSummary
-    setTextSummary(""); // Clear textSummary
-    setSmartPlatform(""); // Clear smart platform
-    setSmartRegion(""); // Clear smart region
+    // Reset all context and session storage
+    setPlatform("apec");
+    setRegion("ile_de_france");
+    setFileSummary("");
+    setTextSummary("");
+    setSmartPlatform("");
     setSmartRegion("");
     setSearchTerm("");
-    setSmartPlatform("");
     setFirstVisitPlatform(true);
     setFirstVisitRegion(true);
     setIsAuthenticated(false);
@@ -74,16 +102,12 @@ const Navbar = () => {
     setHasPromptResults(false);
     setHasCvResults(false);
     setsavedPrompt("");
-    setfileName(""); // <-- Clear the fileName
-    sessionStorage.clear(); // <-- Clear all sessionStorage data
-
-    // Redirect to the login page
+    setfileName("");
+    sessionStorage.clear();
     navigate("/");
   };
-
-  // Handle platform selection and close the dropdown
+ 
   const handlePlatformSelect = (platform) => {
-    console.log(platform);
     setPlatform(platform);
     sessionStorage.setItem("platform", platform);
     setPlatformDropdownOpen(false);
@@ -92,7 +116,6 @@ const Navbar = () => {
     setIsChanged2(true);
   };
 
-  // Handle region selection and close the dropdown
   const handleRegionSelect = (region) => {
     setRegion(region);
     sessionStorage.setItem("region", region);
@@ -102,194 +125,256 @@ const Navbar = () => {
     setIsChanged2(true);
   };
 
-  // Ouvrir/fermer le dropdown au clic sur l'icône
   const togglePlatformDropdown = () => {
     setPlatformDropdownOpen((prev) => !prev);
-    setLocationDropdownOpen(false); // Fermer l'autre dropdown
+    setLocationDropdownOpen(false);
   };
 
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen((prev) => !prev);
-    setPlatformDropdownOpen(false); // Fermer l'autre dropdown
+    setPlatformDropdownOpen(false);
   };
 
-  // Fermer le dropdown lorsque la souris quitte le dropdown lui-même
   const handleMouseLeaveDropdown = () => {
     setPlatformDropdownOpen(false);
     setLocationDropdownOpen(false);
   };
+  
+  const [initialsDropdownOpen, setInitialsDropdownOpen] = useState(false);
 
-  // Fermer les dropdowns si on clique en dehors
+  const toggleInitialsDropdown = () => {
+    setInitialsDropdownOpen((prev) => !prev);
+  };
+
+  const handleMouseLeaveInitialsDropdown = () => {
+    setInitialsDropdownOpen(false);
+  };
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (platformRef.current && !platformRef.current.contains(event.target)) {
-        setPlatformDropdownOpen(false);
-      }
-      if (locationRef.current && !locationRef.current.contains(event.target)) {
-        setLocationDropdownOpen(false);
-      }
-      // Fermer le menu burger sur mobile s'il est ouvert et si on clique en dehors
       if (
         isMenuOpen &&
         menuRef.current &&
-        !menuRef.current.contains(event.target)
+        !menuRef.current.contains(event.target) &&
+        !event.target.classList.contains("burger-menu")
       ) {
         setIsMenuOpen(false);
       }
     };
-
+  
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isMenuOpen]);
 
+  
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+  
+
   return (
     <>
-      <div className="burger-menu" onClick={toggleMenu}>
-        <div
-          className={isMenuOpen ? "burger-bar top transform" : "burger-bar top"}
-        />
-        <div
-          className={
-            isMenuOpen ? "burger-bar middle hide" : "burger-bar middle"
-          }
-        />
-        <div
-          className={
-            isMenuOpen ? "burger-bar bottom transform" : "burger-bar bottom"
-          }
-        />
-      </div>
+    <div 
+      className={`burger-menu ${isMenuOpen ? "active" : ""}`} 
+      onClick={toggleMenu}
+    >
+      <div 
+        className={`burger-bar top ${isMenuOpen ? "transform" : ""}`} 
+        style={{ backgroundColor: isDarkMode ? "#ffffff" : "#171C3F" }} 
+      />
+      <div 
+        className={`burger-bar middle ${isMenuOpen ? "hide" : ""}`} 
+        style={{ backgroundColor: isDarkMode ? "#ffffff" : "#171C3F" }} 
+      />
+      <div 
+        className={`burger-bar bottom ${isMenuOpen ? "transform" : ""}`} 
+        style={{ backgroundColor: isDarkMode ? "#ffffff" : "#171C3F" }} 
+      />
+    </div>
 
-      <nav className={`navbar ${isMenuOpen ? "active" : ""}`} ref={menuRef}>
+    {/* Menu qui s'ouvre et se ferme */}
+    <nav 
+      className={`navbar ${isMenuOpen ? "active" : ""} ${isDarkMode ? "dark-mode" : ""}`} 
+      ref={menuRef}
+    >
         <div className="logo">
           <Link to="/">
-            <img src={logo} alt="Logo" />
+          <img src={isDarkMode ? logo_dark : logo} alt="Logo" />
+
           </Link>
         </div>
 
-        {/* Conditionally render components based on the current route */}
         {location.pathname !== "/historyRslts" && (
           <>
-            {/* Dropdown des plateformes */}
             <div
               ref={platformRef}
-              className="dropdownPlatform"
+              className={`dropdownPlatform ${
+                platformDropdownOpen ? "active" : ""
+              }`}
               onClick={togglePlatformDropdown}
             >
-              <FontAwesomeIcon icon={faBriefcase} color="#171C3F" />
-              <span>{firstVisitPlatform ? "Source" : platform}</span>
+              <FontAwesomeIcon
+                icon={faBriefcase}
+                color={isDarkMode ? "#ffffff" : "#171C3F"}
+              />
+              <span>{firstVisitPlatform ? t("title_source") : platform}</span>
               {platformDropdownOpen && (
                 <ul
                   className="dropdown-menu"
                   onMouseLeave={handleMouseLeaveDropdown}
+                  style={{ textAlign: "center" }}
                 >
-                  <li onClick={() => handlePlatformSelect("Indeed")}>Indeed</li>
-                  <li onClick={() => handlePlatformSelect("LinkedIn")}>
+                  <li
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "10px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handlePlatformSelect("Indeed")}
+                  >
+                    Indeed
+                  </li>
+                  <li
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "10px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handlePlatformSelect("LinkedIn")}
+                  >
                     LinkedIn
                   </li>
-                  <li onClick={() => handlePlatformSelect("Apec")}>Apec</li>
-                  <li onClick={() => handlePlatformSelect("jungle")}>
+                  <li
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "10px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handlePlatformSelect("Apec")}
+                  >
+                    Apec
+                  </li>
+                  <li
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "10px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handlePlatformSelect("jungle")}
+                  >
                     Welcome to jungle
                   </li>
                 </ul>
               )}
             </div>
 
-            {/* Dropdown des régions */}
             <div
               ref={locationRef}
-              className="dropdownRegion"
+              className={`dropdownRegion ${
+                locationDropdownOpen ? "active" : ""
+              }`}
               onClick={toggleLocationDropdown}
             >
-              <FontAwesomeIcon icon={faMapMarkerAlt} color="#171C3F" />
-              <span>{firstVisitRegion ? "Region" : region}</span>
+              <FontAwesomeIcon icon={faMapMarkerAlt} color={isDarkMode ? "#ffffff" : "#171C3F"} />
+              <span>{firstVisitRegion ? t("title_region") : region}</span>
               {locationDropdownOpen && (
                 <ul
                   className="dropdown-menu"
                   onMouseLeave={handleMouseLeaveDropdown}
                 >
-                  <li onClick={() => handleRegionSelect("Île-de-France")}>
+                  <li
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "10px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleRegionSelect("Île-de-France")}
+                  >
                     Île-de-France
                   </li>
-                  <li onClick={() => handleRegionSelect("Hauts-de-France")}>
+                  <li
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "10px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleRegionSelect("Hauts-de-France")}
+                  >
                     Hauts-de-France
                   </li>
                 </ul>
               )}
             </div>
 
-            {/* Search input */}
             {location.pathname === "/PlatformPage" && (
               <div className="job-input">
                 <FontAwesomeIcon
                   icon={faSearch}
                   className="input-icon"
-                  color="#171C3F"
+                  color={isDarkMode ? "#ffffff" : "#171C3F"}
                 />
                 <input
                   type="text"
-                  placeholder="Enter a key information"
+                  placeholder={t("input_search")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
             )}
 
-            {/* Favorites link */}
             {(location.pathname === "/PlatformPage" ||
               location.pathname === "/ListOfLikes") && (
               <Link to="/ListOfLikes" className="dropdownRegion">
                 <FontAwesomeIcon
                   icon={faHeart}
                   className="heart-icon"
-                  color="#171C3F"
+                  color={isDarkMode ? "#ffffff" : "#171C3F"}
                 />
-                <span>Favoris</span>
+                <span>{t("title_favoris")}</span>
               </Link>
             )}
 
-            {/* Smart matching button */}
             <div className="smart-matching">
               <button
                 className="smart-btn"
                 onClick={() => {
                   if (location.pathname === "/PlatformPage") {
-                    navigate("/SmartMatching"); // Navigate to SmartMatching from PlatformPage
+                    navigate("/SmartMatching");
                   } else if (location.pathname === "/ListOfLikes") {
-                    navigate("/PlatformPage"); // Navigate to ManuelMatching from ListOfLikes
+                    navigate("/PlatformPage");
                   } else {
-                    navigate("/PlatformPage"); // Fallback for other cases
+                    navigate("/PlatformPage");
                   }
                 }}
               >
-                {/* Conditionally render the icon and text */}
                 <FontAwesomeIcon
                   icon={
-                    location.pathname === "/PlatformPage"
-                      ? faLightbulb
-                      : faCog
+                    location.pathname === "/PlatformPage" ? faLightbulb : faCog
                   }
                   className="lightbulb-icon"
-                  color="#fff"
+                  color={isDarkMode ? "#ffffff" : "#171C3F"}
                 />
                 <span className="matching-text">
                   {location.pathname === "/PlatformPage"
-                    ? "Smart Matching" // Show Smart Matching for PlatformPage
+                    ? t("btn_SM")
                     : location.pathname === "/ListOfLikes"
-                    ? "Manual Matching" // Show Manual Matching for ListOfLikes
-                    : "Manual Matching"}
+                    ? t("btn_MM")
+                    : t("btn_MM")}
                 </span>
               </button>
             </div>
           </>
         )}
 
-        {/* When on /historyRslts, display only the logo, two buttons, and logout */}
         {location.pathname === "/historyRslts" && (
           <>
-            {/* Smart Matching Button */}
             <div className="smart-matching">
               <button
                 className="smart-btn"
@@ -298,13 +383,12 @@ const Navbar = () => {
                 <FontAwesomeIcon
                   icon={faLightbulb}
                   className="lightbulb-icon"
-                  color="#fff"
+                  color={isDarkMode ? "#ffffff" : "#171C3F"}
                 />
-                <span className="matching-text">Smart Matching</span>
+                <span className="matching-text">{t("btn_SM")}</span>
               </button>
             </div>
 
-            {/* Manual Matching Button */}
             <div className="smart-matching">
               <button
                 className="smart-btn"
@@ -313,21 +397,57 @@ const Navbar = () => {
                 <FontAwesomeIcon
                   icon={faCog}
                   className="lightbulb-icon"
-                  color="#fff"
+                  color={isDarkMode ? "#ffffff" : "#171C3F"}
                 />
-                <span className="matching-text">Manual Matching</span>
+                <span className="matching-text">{t("btn_MM")}</span>
               </button>
             </div>
           </>
         )}
 
-        {/* Logout icon always displayed */}
-        <div className="logout-icon" onClick={handleLogout}>
-          <FontAwesomeIcon
-            icon={faSignOutAlt}
-            className="logout-btn"
-            color="#171C3F"
-          />
+        {/* Initials Dropdown */}
+        <div className="dropdownInitials">
+          <div
+            ref={initialsRef}
+            className="initials-circle"
+            onClick={toggleInitialsDropdown}
+          >
+            {getInitials(email)}
+          </div>
+
+          {initialsDropdownOpen && (
+            <ul
+              className="dropdown-menu"
+              ref={initialsDropdownRef}
+              onMouseLeave={handleMouseLeaveInitialsDropdown}
+            >
+              {/* <li
+                className="dropdown-itemm"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+                onClick={() => {
+                  toggleTheme();
+                }}
+                
+              >
+                {t("theme")} <FontAwesomeIcon icon={faPalette} />
+              </li> */}
+              <li
+                className="dropdown-itemm"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+                onClick={handleLogout}
+              >
+                {t("logout")} <FontAwesomeIcon icon={faSignOutAlt} />
+              </li>
+            </ul>
+          )}
         </div>
       </nav>
     </>

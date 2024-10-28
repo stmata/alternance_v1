@@ -9,6 +9,7 @@ import {
 import styles from "./LoginPage.module.css";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../AppContext";
+import { useTranslation } from 'react-i18next';
 
 const useTypewriterEffect = (text, duration) => {
   const [displayedText, setDisplayedText] = useState("");
@@ -40,11 +41,8 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const [isSkemaDomain, setIsSkemaDomain] = useState(true);
   const baseUrl = import.meta.env.VITE_APP_BASE_URL;
-  const fullText =
-    "Welcome to the SKEMA Application Alternance.\n Discover job opportunities that match your skills with the power of AI. \n Enhance your CV with personalized recommendations and create tailored cover letters for your desired positions. \n Start your journey towards the perfect job! ";
-
+  const { t } = useTranslation();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const textToDisplay = isSmallScreen ? fullText : fullText;
 
   const isValidEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -88,7 +86,7 @@ const LoginForm = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const displayedText = useTypewriterEffect(textToDisplay, 15000);
+  const displayedText = useTypewriterEffect(t('welcome_message'), 15000);
 
   const sendVerificationCode = async (email) => {
     try {
@@ -197,7 +195,7 @@ const LoginForm = () => {
       <div className={styles.animatedText}>{displayedText}</div>
       <div className={styles.loginFormBox}>
         <div className={styles.formHeader}>
-          <h2 className={styles.formTitle}>Login :</h2>
+          <h2 className={styles.formTitle}>{t('login')} :</h2>
         </div>
         <form onSubmit={handleSubmit} className={styles.loginForm}>
           {/* Email input visible if code is NOT sent */}
@@ -207,7 +205,7 @@ const LoginForm = () => {
                 type="email"
                 id="email"
                 className={styles.inputField}
-                placeholder="Enter your SKEMA mail"
+                placeholder={t('input_mail')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value.toLowerCase())} // Convert to lowercase
                 required
@@ -232,7 +230,7 @@ const LoginForm = () => {
                   type="text"
                   id="code"
                   className={styles.inputField}
-                  placeholder="Enter the code received via email"
+                  placeholder={t('input_code')}
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   required
@@ -243,14 +241,14 @@ const LoginForm = () => {
           )}
 
           <button type="submit" className={styles.submitBtn}>
-            {isCodeSent ? "Confirm" : "Login"}
+            {isCodeSent ? t('btn_confirm') : t('login')}
           </button>
         </form>
         {!isCodeSent && !isSkemaDomain && (
           <div className={styles.errorText}>{error}</div>
         )}
         {isCodeSent && wrongCode && (
-          <div className={styles.errorText}>Wrong code. Please try again!</div>
+          <div className={styles.errorText}>{t('error_code')}</div>
         )}
 
         {/* Timer for code resend */}
@@ -261,7 +259,7 @@ const LoginForm = () => {
                 onClick={handleResendCode}
                 className={styles.resendCodeBtn}
               >
-                Resend code
+                {t('resend')}
                 <FaSyncAlt
                   className={styles.resendIcon}
                   size={14}
@@ -272,7 +270,7 @@ const LoginForm = () => {
               <div className={styles.timerContainer}>
                 <FaHourglassHalf className={styles.timeIcon} size={20} />
                 <p className={styles.countdownText}>
-                  {countdown} seconds remaining
+                  {countdown} {t('time')}
                 </p>
               </div>
             )}

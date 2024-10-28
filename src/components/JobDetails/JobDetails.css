@@ -55,3 +55,34 @@
     }
   }
   
+
+  /* Mode sombre pour job-details-container */
+.dark-mode .job-details-container {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  color: #e0e0e0;
+}
+
+.dark-mode .job-title {
+  color: #FFD700; /* Couleur dorée pour le titre du poste */
+}
+
+.dark-mode .job-section {
+  color: #c0c0c0;
+}
+
+.dark-mode .job-section strong {
+  color: #FFD700; /* Met en avant les titres avec une couleur dorée */
+}
+
+.dark-mode .job-title-like-container {
+  color: #e0e0e0;
+}
+
+.dark-mode .job-list-item {
+  color: #b3b3b3; /* Couleur plus claire pour les éléments de la liste */
+}
+
+.dark-mode .job-list-item::marker {
+  color: #FFD700; /* Couleur dorée pour les puces de la liste */
+}

@@ -17,6 +17,9 @@ export const AppProvider = ({ children }) => {
   const [new_data_added, setNewDataAdded] = useState(
     sessionStorage.getItem('new_data_added') === 'true' || false
   );
+  const [language, setLanguage] = useState(sessionStorage.getItem('language') || 'fr');  useEffect(() => {
+    sessionStorage.setItem('language', language);
+  }, [language]);
 
   useEffect(() => {
     sessionStorage.setItem('new_data_added', new_data_added ? 'true' : 'false'); // Sauvegarder new_data_added dans sessionStorage
@@ -134,7 +137,7 @@ export const AppProvider = ({ children }) => {
   }, [savedPrompt]);
 
   return (
-    <AppContext.Provider value={{new_data_added, setNewDataAdded, email, setEmail, userId, setUserId, fileName, setfileName, savedPrompt, setsavedPrompt, hasPromptResults, setHasPromptResults, hasCvResults, setHasCvResults, isAuthenticated, setIsAuthenticated, platform, setPlatform, region, setRegion, searchTerm, setSearchTerm, fileSummary, setFileSummary, textSummary, setTextSummary, smartPlatform, setSmartPlatform, smartRegion, setSmartRegion, firstVisitPlatform, setFirstVisitPlatform, firstVisitRegion, setFirstVisitRegion, isChanged, setIsChanged, isChanged2, setIsChanged2 }}>
+    <AppContext.Provider value={{language, setLanguage,new_data_added, setNewDataAdded, email, setEmail, userId, setUserId, fileName, setfileName, savedPrompt, setsavedPrompt, hasPromptResults, setHasPromptResults, hasCvResults, setHasCvResults, isAuthenticated, setIsAuthenticated, platform, setPlatform, region, setRegion, searchTerm, setSearchTerm, fileSummary, setFileSummary, textSummary, setTextSummary, smartPlatform, setSmartPlatform, smartRegion, setSmartRegion, firstVisitPlatform, setFirstVisitPlatform, firstVisitRegion, setFirstVisitRegion, isChanged, setIsChanged, isChanged2, setIsChanged2 }}>
       {children}
     </AppContext.Provider>
   );

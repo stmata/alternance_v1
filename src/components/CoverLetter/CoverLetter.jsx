@@ -3,8 +3,19 @@ import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver'; // To download the file
 import Markdown from 'markdown-to-jsx'; // For rendering markdown
 import FileDownloadIcon from '@mui/icons-material/FileDownload'; // Icon for download
+import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
+import i18n from '../../i18n'; // Importez i18n pour manipuler la langue
+
 
 const CoverLetter = ({ coverLetter }) => {
+  useEffect(() => {
+    // Charger la langue depuis sessionStorage si elle existe
+    const storedLanguage = sessionStorage.getItem('language') || 'fr';
+    if (i18n.language !== storedLanguage) {
+      i18n.changeLanguage(storedLanguage); // Met à jour i18n pour utiliser la langue stockée
+    }
+  }, []);
   // Function to clean markdown text and format for .docx file download
   const removeMarkdownAndFormat = (text) => {
     return text
@@ -20,6 +31,7 @@ const CoverLetter = ({ coverLetter }) => {
       .split('\n')
       .filter((line) => line.trim().length > 0);
   };
+  const { t } = useTranslation();
 
   // Function to download the cover letter as a .docx file
   const downloadCoverLetterWord = () => {
@@ -82,7 +94,7 @@ const CoverLetter = ({ coverLetter }) => {
     },
   }}
 >
-  {coverLetter || 'No cover letter available for this job.'}
+  {coverLetter || t('error_no_cover_letter')}
 </Markdown>
 
       </Box>

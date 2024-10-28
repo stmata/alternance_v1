@@ -6,10 +6,12 @@ import ProtectedRoute from './auth/ProtedtedRoute';
 import PlatformPage from './components/PlatformPage/PlatformPage';
 import SmartFilter from './components/SmartFilter/SmartFilter';
 import RstMatching from './components/RstMatching/RstMatching';
-import HistoryRslts from './components/HistoryRslts/HistoryRslts'; // Import the new component
 import ErrorPage from './components/ErrorPage/ErrorPage';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import ListOfLikes from './components/ListOfLikes/ListOfLikes';
+import LanguageSwitcher from './components/LanguageSwitcher/LanguageSwitcher';
+
+import './i18n';
 
 function App() {
   const location = useLocation(); // Get the current location
@@ -25,26 +27,34 @@ function App() {
   const isValidPath = validPaths.includes(location.pathname);
 
   useEffect(() => {
-    // Force le mode clair en modifiant directement le style du body
+    // Vérifie le mode de couleur au chargement
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const themePreference = darkModeQuery.matches ? 'dark' : 'light';
 
-    if (darkModeQuery.matches) {
-      document.body.style.backgroundColor = 'white';
-      document.body.style.color = 'black';
+    // Enregistre la préférence dans la session
+    sessionStorage.setItem('theme', themePreference);
+
+    // Applique le style basé sur la préférence
+    if (themePreference === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
     }
 
-    // Fonction de gestion des changements du mode de la plateforme
+    // Écoute les changements de thème du système
     const handleThemeChange = (e) => {
-      if (e.matches) {
-        document.body.style.backgroundColor = 'white';
-        document.body.style.color = 'black';
+      const newTheme = e.matches ? 'dark' : 'light';
+      sessionStorage.setItem('theme', newTheme);
+      if (newTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
       }
     };
 
-    // Ajoutez un écouteur pour détecter les changements dans le mode de la plateforme
     darkModeQuery.addEventListener('change', handleThemeChange);
 
-    // Nettoyage de l'écouteur à la fin
+    // Nettoyage de l'écouteur
     return () => {
       darkModeQuery.removeEventListener('change', handleThemeChange);
     };
@@ -89,16 +99,9 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/historyRslts"
-            element={
-              <ProtectedRoute>
-                <HistoryRslts /> {/* Add the new component here */}
-              </ProtectedRoute>
-            }
-          />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
+        <LanguageSwitcher />
       </div>
     </AppProvider>
   );

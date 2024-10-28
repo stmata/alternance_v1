@@ -1,17 +1,39 @@
-import { Box, Typography } from '@mui/material';
-import './JobDetails.css'; // Import the CSS file for custom styles
+import { Box, Typography } from "@mui/material";
+import "./JobDetails.css"; // Import the CSS file for custom styles
 import { FavoriteBorder, Favorite } from "@mui/icons-material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useTranslation } from "react-i18next";
 
 const JobDetails = ({ selectedJob }) => {
-  const jobDescription = selectedJob.Summary || 'N/A';
+  const { t, i18n } = useTranslation(); // Only use `t` for translations
+  const language = i18n.language;
+  const jobDescription =
+    language === "fr" ? selectedJob.Summary_fr : selectedJob.Summary || "N/A";
   const baseUrl = import.meta.env.VITE_APP_BASE_URL;
 
-  const jobTitle = jobDescription.match(/\*\*Job Title:\*\* (.*?)( \*\*|$)/)?.[1] || 'Click view alternance for more details!';
-  const primaryResponsibilities = jobDescription.match(/\*\*Primary Responsibilities:\*\*([\s\S]*?)(\*\*|$)/)?.[1] || 'No more details!';
-  const keySkills = jobDescription.match(/\*\*Key Required Skills:\*\*([\s\S]*?)(\*\*|$)/)?.[1] || 'No more details!';
-  const mainObjectives = jobDescription.match(/\*\*Main Objectives:\*\*([\s\S]*?)(\*\*|$)/)?.[1] || 'No more details!';
+  const jobTitleLabel = t("job_title");
+  const primaryResponsibilitiesLabel = t("primary_responsibilities");
+  const keySkillsLabel = t("key_skills");
+  const mainObjectivesLabel = t("main_objectives");
 
+  const jobTitle =
+    jobDescription.match(
+      new RegExp(`\\*\\*${jobTitleLabel}:\\*\\*([\\s\\S]*?)(\\*\\*|$)`)
+    )?.[1] || t("no_more_details");
+  const primaryResponsibilities =
+    jobDescription.match(
+      new RegExp(
+        `\\*\\*${primaryResponsibilitiesLabel}:\\*\\*([\\s\\S]*?)(\\*\\*|$)`
+      )
+    )?.[1] || t("no_more_details");
+  const keySkills =
+    jobDescription.match(
+      new RegExp(`\\*\\*${keySkillsLabel}:\\*\\*([\\s\\S]*?)(\\*\\*|$)`)
+    )?.[1] || t("no_more_details");
+  const mainObjectives =
+    jobDescription.match(
+      new RegExp(`\\*\\*${mainObjectivesLabel}:\\*\\*([\\s\\S]*?)(\\*\\*|$)`)
+    )?.[1] || t("no_more_details");
   const [likedRows, setLikedRows] = useState({}); // Store the like state for each post based on the unique identifier
   const userId = sessionStorage.getItem("user_id");
 
@@ -66,7 +88,6 @@ const JobDetails = ({ selectedJob }) => {
 
     if (likedRows[jobId]) {
       // Job is already liked, so unlike it
-      // Update state
       setLikedRows((prevState) => ({
         ...prevState,
         [jobId]: false, // Set this specific job as unliked
@@ -97,6 +118,7 @@ const JobDetails = ({ selectedJob }) => {
         ...prevState,
         [jobId]: true, // Set this specific job as liked
       }));
+      console.log(job);
 
       // Send the like status to the backend
       fetch(`${baseUrl}/history/add-liked-post`, {
@@ -108,6 +130,7 @@ const JobDetails = ({ selectedJob }) => {
           user_id: userId,
           job_post: job, // Send job details
         }),
+        
       })
         .then((response) => response.json())
         .then((data) => {
@@ -121,8 +144,8 @@ const JobDetails = ({ selectedJob }) => {
 
   const renderList = (content) => {
     return content
-      .split('-')
-      .filter((item) => item.trim() !== '')
+      .split("-")
+      .filter((item) => item.trim() !== "")
       .map((item, index) => (
         <li key={index} className="job-list-item">
           {item.trim()}
@@ -155,21 +178,21 @@ const JobDetails = ({ selectedJob }) => {
       </Box>
 
       <br />
+      <Box>
+  <strong>{t("title_PR")}</strong>
+  <ul>{renderList(primaryResponsibilities)}</ul>
+</Box>
 
-      <Typography variant="body1" className="job-section">
-        <strong>Primary Responsibilities:</strong>
-        <ul>{renderList(primaryResponsibilities)}</ul>
-      </Typography>
+<Box>
+  <strong>{t("title_KRS")}</strong>
+  <ul>{renderList(keySkills)}</ul>
+</Box>
 
-      <Typography variant="body1" className="job-section">
-        <strong>Key Required Skills:</strong>
-        <ul>{renderList(keySkills)}</ul>
-      </Typography>
+<Box>
+  <strong>{t("title_MO")}</strong>
+  <ul>{renderList(mainObjectives)}</ul>
+</Box>
 
-      <Typography variant="body1" className="job-section">
-        <strong>Main Objectives:</strong>
-        <ul>{renderList(mainObjectives)}</ul>
-      </Typography>
     </Box>
   );
 };

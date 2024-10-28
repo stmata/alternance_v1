@@ -18,13 +18,27 @@ const LastRequest = () => {
   const [isLoading, setIsLoading] = useState(true); // State for loading
   const navigate = useNavigate(); // For programmatic navigation
   const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const storedTheme = sessionStorage.getItem("theme") || "light";
+    setIsDarkMode(storedTheme === "dark");
+  }, []);
+
+  const toggleTheme = () => {
+    setIsDarkMode((prevMode) => {
+      const newMode = !prevMode;
+      sessionStorage.setItem("theme", newMode ? "dark" : "light");
+      return newMode;
+    });
+  };
   const {
     new_data_added, setNewDataAdded
   } = useContext(AppContext);
 
   const handleLastRequestClick = (request) => {
     // Redirect to /historyRslts and pass predict_jobs in state
-    navigate('/historyRslts', { state: { predictJobs: request.predict_jobs } });
+    navigate('/rslts00', { state: { predictJobs: request.predict_jobs } });
   };
 
   // Function to fetch the last requests
@@ -122,8 +136,8 @@ const LastRequest = () => {
         width="100%"
         mt={4} // Adds top margin to push spinner down
       >
-        <CircularProgress sx={{ color: '#171C3F' }} />
-      </Box>
+          <CircularProgress sx={{ color: isDarkMode ? "#e0e0e0" : "#171C3F" }} />
+          </Box>
     );
   }
 

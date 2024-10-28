@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import "./PlatformPage.css";
 import JobDetails from "../JobDetails/JobDetails";
+import { useTranslation } from 'react-i18next';
 
 const PlatformPage = () => {
   const { platform, region, searchTerm } = useContext(AppContext);
@@ -25,7 +26,22 @@ const PlatformPage = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage] = useState(20);
+  const { t } = useTranslation();
 
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const storedTheme = sessionStorage.getItem("theme") || "light";
+    setIsDarkMode(storedTheme === "dark");
+  }, []);
+
+  const toggleTheme = () => {
+    setIsDarkMode((prevMode) => {
+      const newMode = !prevMode;
+      sessionStorage.setItem("theme", newMode ? "dark" : "light");
+      return newMode;
+    });
+  };
   // États pour gérer la responsivité
   const [isTableVisible, setIsTableVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
@@ -47,7 +63,7 @@ const PlatformPage = () => {
         }),
       });
       const result = await response.json();
-
+      console.log(result)
       setData(result.content || []);
     } catch (error) {
       console.error("Error:", error);
@@ -75,7 +91,7 @@ const PlatformPage = () => {
   useEffect(() => {
     fetchData(normalizePlatform(platform), normalizeRegion(region));
     setSelectedJob(null);
-    setIsTableVisible(true); // Ensure the table is visible when platform or region changes
+    setIsTableVisible(true);
   }, [platform, region]);
 
   // Gestion de la responsivité
@@ -121,80 +137,60 @@ const PlatformPage = () => {
   return (
     <Box
       display="flex"
-      className="split-view-container"
+      className={`split-view-container ${isDarkMode ? "dark-mode" : ""}`}
       padding="20px"
       width="100%"
     >
-      {/* Conteneur du tableau */}
       {loading ? (
         <div className="spinner-container">
-        <CircularProgress sx={{ color: '#171C3F' }} />
-      </div>
+          <CircularProgress sx={{ color: isDarkMode ? "#e0e0e0" : "#171C3F" }} />
+        </div>
       ) : filteredData.length === 0 ? (
-        // Afficher une erreur si les données sont vides
         <Box
           display="flex"
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
           width="100%"
-          className="Warning"
+          className={`Warning ${isDarkMode ? "dark-mode" : ""}`}
           sx={{
-            backgroundColor: "#fff3cd", // Couleur de fond jaune clair pour l'avertissement
-            border: "1px solid #ffeeba", // Bordure jaune plus foncée pour correspondre à l'avertissement
-            borderRadius: "10px", // Coins arrondis pour un look plus propre
+            backgroundColor: isDarkMode ? "rgba(255, 255, 0)" : "#fff3cd",
+            borderRadius: "10px",
             padding: "20px",
-            marginLeft: "450px",
           }}
         >
-          <WarningIcon sx={{ color: "#856404", fontSize: 50 }} />{" "}
-          {/* Icône Warning avec couleur jaune foncé */}
-          <Typography
-            variant="h6"
-            sx={{ color: "#856404", fontWeight: "bold", mt: 2 }}
-          >
-            Warning: No data available.
+          <WarningIcon sx={{ color: "#856404", fontSize: 50 }} />
+          <Typography variant="h6" sx={{ color: "#856404", fontWeight: "bold", mt: 2 }}>
+            {t("warning_!Data")}
           </Typography>
         </Box>
       ) : (
-        <TableContainer
-          component={Paper}
-          className={`table-container ${!isTableVisible ? "hide" : ""}`}
-          sx={{ width: "100%" }}
-        >
+        <TableContainer component={Paper} className={`table-container ${!isTableVisible ? "hide" : ""} ${
+          isDarkMode ? "dark-mode" : ""
+        }`} sx={{ width: "100%" }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Company</TableCell>
-                <TableCell>Title</TableCell>
-                <TableCell>Location</TableCell>
-                <TableCell>Date</TableCell>
+                <TableCell >{t("title_company")}</TableCell>
+                <TableCell>{t("title_title")}</TableCell>
+                <TableCell>{t("title_location")}</TableCell>
+                <TableCell>{t("title_date")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredData
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((job, index) => (
-                  <TableRow
-                    key={index}
-                    onClick={() => handleRowClick(job)}
-                    hover
-                    style={{ cursor: "pointer" }}
-                  >
-                    <TableCell className="elmTab" data-label="Company">
-                      {job.Company}
-                    </TableCell>
-                    <TableCell className="elmTab" data-label="Title">
-                      {job.Title}
-                    </TableCell>
-                    <TableCell className="elmTab" data-label="Location">
-                      {job.Location}
-                    </TableCell>
-                    <TableCell className="elmTab" data-label="Date">
-                      {job["Publication Date"]}
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((job, index) => (
+                <TableRow
+                  key={index}
+                  onClick={() => handleRowClick(job)}
+                  hover
+                  style={{ cursor: "pointer" }}
+                >
+                  <TableCell className="elmTab" data-label="Company">{job.Company}</TableCell>
+                  <TableCell className="elmTab" data-label="Title">{job.Title}</TableCell>
+                  <TableCell className="elmTab" data-label="Location">{job.Location}</TableCell>
+                  <TableCell className="elmTab" data-label="Date">{job["Publication Date"]}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
           <TablePagination
@@ -209,11 +205,11 @@ const PlatformPage = () => {
             showLastButton={false}
             nextIconButtonProps={{
               "aria-label": "Next Page",
-              sx: { color: "#171C3F", fontWeight: "bold" },
+              sx: { color: isDarkMode ? "#e0e0e0" : "#171C3F", fontWeight: "bold" },
             }}
             backIconButtonProps={{
               "aria-label": "Previous Page",
-              sx: { color: "#171C3F", fontWeight: "bold" },
+              sx: { color: isDarkMode ? "#e0e0e0" : "#171C3F", fontWeight: "bold" },
             }}
             sx={{
               display: "flex",
@@ -229,50 +225,34 @@ const PlatformPage = () => {
           />
         </TableContainer>
       )}
-
-      {/* Conteneur des détails */}
       {selectedJob && (
         <Box
-          className={`details-container ${
-            isMobile && !isTableVisible ? "active" : ""
-          }`}
+          className={`details-container ${isMobile && !isTableVisible ? "active" : ""}`}
           sx={{
             width: isMobile ? "100%" : "60%",
             marginLeft: isMobile ? 0 : "20px",
           }}
         >
-          {/* Close button for desktop */}
           {!isMobile && (
-            <button
-              className="close-button"
-              onClick={() => setSelectedJob(null)}
-            >
+            <button className="close-button" onClick={() => setSelectedJob(null)}>
               &times;
             </button>
           )}
-
-          {/* Bouton de retour sur mobile */}
           {isMobile && (
             <button className="back-button" onClick={handleBackToTable}>
               &lt;
             </button>
           )}
-
-          <Typography component="h6" variant="h6">
-            More details:
-          </Typography>
-          
-          <Typography>
-            <JobDetails selectedJob={selectedJob} />
-          </Typography>
-
-          {/* Bouton pour ouvrir l'URL du job */}
+          <Box component="header">
+            <Typography variant="h6">{t("title_MD")}</Typography>
+          </Box>
+          <JobDetails selectedJob={selectedJob} />
           <Box mt={2} className="center-container">
             <Button
               className="view-job-btn"
               onClick={() => window.open(selectedJob.Url, "_blank")}
             >
-              View Alternance
+              {t("title_VA")}
             </Button>
           </Box>
         </Box>

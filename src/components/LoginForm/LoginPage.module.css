@@ -225,6 +225,7 @@
     flex-direction: column;  /* Stack animatedText and loginFormBox vertically */
     align-items: center;     /* Center them horizontally */
     justify-content: flex-start; /* Align to the top */
+    max-height: max-content;
   }
   
   .animatedText {
@@ -281,4 +282,71 @@
   .inputField::placeholder, .inputField{
     font-size: 0.9rem;
   }
+}
+
+/* Mode sombre pour LoginPage */
+.dark-mode .loginContainer {
+  background-color: #1a1a1a;
+}
+
+.dark-mode .animatedText {
+  color: #e0e0e0; /* Texte clair sur fond sombre */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); /* Ombre subtile pour le texte */
+}
+
+.dark-mode .loginFormBox {
+  background: rgba(33, 33, 33, 0.8); /* Fond semi-transparent sombre */
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); /* Ombre plus subtile */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark-mode .formTitle {
+  color: #FFD700; /* Titre doré pour contraste */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Ombre pour un effet lumineux */
+}
+
+.dark-mode .inputField {
+  background: rgba(33, 33, 33, 0.5); /* Fond sombre pour l'input */
+  color: #e0e0e0;
+  border: 1px solid #444; /* Bordure légèrement plus claire */
+}
+
+.dark-mode .inputField::placeholder {
+  color: #bbb; /* Couleur claire pour le placeholder */
+  opacity: 0.8;
+}
+
+.dark-mode .inputIcon {
+  color: #FFD700; /* Icônes dorées */
+}
+
+.dark-mode .submitBtn {
+  background-color: #444;
+  color: #FFD700;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark-mode .submitBtn:hover {
+  background-color: #FFD700; /* Inversion des couleurs */
+  color: #1a1a1a;
+}
+
+.dark-mode .errorText {
+  color: #ff4c4c; /* Rouge vif pour les erreurs */
+}
+
+.dark-mode .resendCodeBtn {
+  color: #FFD700; /* Bouton de renvoi du code en doré */
+}
+
+.dark-mode .resendCodeBtn:hover {
+  color: #FFF;
+}
+
+.dark-mode .countdownText {
+  color: #FFD700; /* Texte du compte à rebours en doré */
+}
+
+.dark-mode .timeIcon {
+  color: #FFD700; /* Icône de l'horloge en doré */
 }

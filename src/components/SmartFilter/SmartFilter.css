@@ -220,3 +220,102 @@
     margin-bottom: 20px;
   }
 }
+/* Mode sombre pour smart-filter-container2 */
+.dark-mode .smart-filter-container2 {
+  background-color: transparent; /* Couleur sombre pour le fond */
+  color: #e0e0e0; /* Couleur de texte claire */
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); /* Ombre légère blanche */
+}
+
+/* Arrière-plan et bordure de section dans le mode sombre */
+.dark-mode .filter-section {
+  background-color: #2a2a2a;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1); /* Ombre légère */
+  color: #e0e0e0;
+}
+
+.dark-mode .filter-section h2 {
+  color: #e7433c; /* Couleur dorée pour les titres */
+}
+
+.dark-mode .filter-section p {
+  color: #c0c0c0;
+}
+
+/* Style pour le textarea dans le mode sombre */
+.dark-mode .filter-section textarea {
+  background-color: #333;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+
+.dark-mode .filter-section textarea:focus {
+  border-color: #333; /* Bordure dorée au focus */
+  box-shadow: 0 0 5px rgba(189, 188, 185, 0.5); /* Ombre dorée au focus */
+}
+
+/* Style pour le bouton désactivé dans le mode sombre */
+.dark-mode .disabled-button {
+  background-color: #555;
+  color: #aaa;
+  border: none;
+}
+.dark-mode .file-upload-form{
+  border: 2px solid #aaa !important;
+}
+.dark-mode .file-upload-title{
+  color: whitesmoke !important;
+}
+/* Boutons en mode sombre */
+.dark-mode .button-active {
+  background-color: #333 !important;
+  color: #ffffff !important;
+  border: 2px solid #333 !important;
+}
+
+.dark-mode .button-active:hover {
+  background-color: #ffffff;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+
+/* Boutons désactivés en mode sombre */
+.dark-mode .disabled-button {
+  background-color: #555 !important;
+  color: #aaa;
+  border: none;
+}
+
+
+
+/* Style du séparateur */
+.dark-mode .divider {
+  background-color: #e7433c; /* Couleur dorée pour le séparateur */
+}
+
+/* Style pour le conteneur de téléchargement de fichiers en mode sombre */
+.dark-mode .file-upload-form {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+}
+
+.dark-mode .file-upload-box {
+  background-color: #333;
+  border: 2px dashed white;
+}
+
+.dark-mode .file-upload-title {
+  color: #e0e0e0;
+}
+
+.dark-mode .file-label {
+  color: #e0e0e0;
+}
+
+.dark-mode .upload-icon {
+  color: #e0e0e0; /* Couleur dorée pour l'icône de téléchargement */
+}
+
+.dark-mode .file-size {
+  color: #e0e0e0;
+}

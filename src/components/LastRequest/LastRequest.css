@@ -229,3 +229,56 @@
         font-size: 1rem; /* Reduce arrow size for mobile */
     }
 }
+
+/* Mode sombre pour LastRequest */
+.dark-mode .carousel-container {
+    background-color: transparent;
+    color: #e0e0e0;
+}
+
+.dark-mode .carousel-item {
+    background-color: transparent !important;
+    border: 1px solid #444;
+    color: #e0e0e0;
+}
+
+.dark-mode .carousel-item.active {
+    background-color: #444;
+}
+
+.dark-mode .carousel-item:hover {
+    background-color: #555;
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+}
+
+.dark-mode .platform-logo {
+    filter: brightness(0.8); /* Assombrit les logos */
+}
+
+.dark-mode .date-time {
+    color: whitesmoke; /* Doré pour la date et l'heure */
+}
+
+.dark-mode .file-prompt, .dark-mode .region {
+    color: #e0e0e0;
+}
+
+.dark-mode .file-icon, .dark-mode .prompt-icon, .dark-mode .region-icon {
+    color: whitesmoke; /* Doré pour les icônes */
+}
+
+.dark-mode .carousel-pagination .carousel-dot {
+    background-color: #555;
+}
+
+.dark-mode .carousel-pagination .carousel-dot.active {
+    background-color: #e7433c; /* Point actif en doré */
+}
+
+.dark-mode .MuiIconButton-root {
+    color: #FFD700 !important; /* Boutons de navigation dorés */
+}
+
+.dark-mode .MuiIconButton-root:hover {
+    color: #e0e0e0 !important; /* Boutons de navigation en blanc au survol */
+}
