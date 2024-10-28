@@ -225,7 +225,7 @@
     flex-direction: column;  /* Stack animatedText and loginFormBox vertically */
     align-items: center;     /* Center them horizontally */
     justify-content: flex-start; /* Align to the top */
-    max-height:fit-content;
+    max-height:500vh;
   }
   
   .animatedText {
