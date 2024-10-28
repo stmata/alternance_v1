@@ -207,7 +207,7 @@ const LastRequest = () => {
                     )}
                   </Box>
 
-                  <Box display="flex" alignItems="center">
+                  <Box display="flex" alignItems="center" className='file-promptt'>
                     <MdLocationOn className="region-icon" />
                     <Typography variant="body1" className="file-prompt">
                       {request.region}

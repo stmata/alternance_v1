@@ -370,9 +370,15 @@ table tbody tr:hover {
         color: var(--primary-color);
         font-weight: bold;
     }
+
+    .dark-mode td {
+        color: whitesmoke !important;
+    }
+    .dark-mode .table-container .elmTab {
+        color: #ffffff !important;
+        font-weight: bold !important;
+    }
 }
-
-
 
 /* Mode sombre */
 .dark-mode {
@@ -391,10 +397,25 @@ table tbody tr:hover {
 }
 
 .dark-mode .Warning {
-    background-color: #2a2a2a;
-    color: #ffcc00;
+    background: linear-gradient(135deg, #1f1f1f 0%, #2b2b2b 100%) !important; /* Gradient pour un fond plus attrayant */
+    color: #ffcc00; /* Texte en jaune doré pour le contraste */
+    border: 1px solid #444; /* Bordure pour délimiter la zone */
+    border-radius: 8px; /* Coins arrondis pour un aspect moderne */
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* Légère ombre portée pour la profondeur */
 }
 
+/* Style du texte à l'intérieur de .Warning */
+.dark-mode .Warning h6 {
+    color: #ffcc00;
+    font-weight: bold;
+}
+
+/* Style de l'icône d'avertissement */
+.dark-mode .Warning .MuiSvgIcon-root {
+    color: #ffcc00;
+    font-size: 50px; /* Taille de l'icône */
+}
 .dark-mode .close-button {
     color: #ffffff;
 }
@@ -418,7 +439,7 @@ table tbody tr:hover {
 }
 
 .dark-mode td {
-    color: var(--secondary-color);
+    color: #ffffff !important;
 }
 
 .dark-mode table tbody tr:hover {
@@ -477,4 +498,10 @@ table tbody tr:hover {
 .dark-mode .MuiTablePagination-actions .MuiIconButton-root:hover {
     color: #e7433c !important; /* Couleur au survol */
     background-color: transparent;
+}
+
+
+.dark-mode .table-container .elmTab::before {
+    color: #e7433c !important;
+    font-size: 15px !important;
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { AppContext } from "../../AppContext";
-import CircularProgress from '@mui/material/CircularProgress'; // Import spinner
+import CircularProgress from '@mui/material/CircularProgress';
 import WarningIcon from "@mui/icons-material/Warning";
 import {
   Box,
@@ -21,8 +21,8 @@ import { useTranslation } from 'react-i18next';
 
 const PlatformPage = () => {
   const { platform, region, searchTerm } = useContext(AppContext);
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);  // Initialiser data à null
+  const [loading, setLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage] = useState(20);
@@ -35,20 +35,12 @@ const PlatformPage = () => {
     setIsDarkMode(storedTheme === "dark");
   }, []);
 
-  const toggleTheme = () => {
-    setIsDarkMode((prevMode) => {
-      const newMode = !prevMode;
-      sessionStorage.setItem("theme", newMode ? "dark" : "light");
-      return newMode;
-    });
-  };
   // États pour gérer la responsivité
   const [isTableVisible, setIsTableVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
 
   const baseUrl = import.meta.env.VITE_APP_BASE_URL;
   
-
   const fetchData = async (platformToFetch, regionToFetch) => {
     setLoading(true);
     try {
@@ -67,6 +59,7 @@ const PlatformPage = () => {
       setData(result.content || []);
     } catch (error) {
       console.error("Error:", error);
+      setData([]);  // S'assurer que data est un tableau vide en cas d'erreur
     } finally {
       setLoading(false);
     }
@@ -108,17 +101,20 @@ const PlatformPage = () => {
     };
   }, []);
 
-  const filteredData = searchTerm
-    ? data.filter(
-        (job) =>
-          job.Title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          job.Company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          job.Location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          job["Publication Date"]
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
-      )
-    : data;
+  // Modification ici pour s'assurer que filteredData est toujours un tableau
+  const filteredData = data
+    ? searchTerm
+      ? data.filter(
+          (job) =>
+            job.Title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            job.Company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            job.Location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            job["Publication Date"]
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+        )
+      : data
+    : [];
 
   const handleRowClick = (job) => {
     setSelectedJob(job);
@@ -141,11 +137,11 @@ const PlatformPage = () => {
       padding="20px"
       width="100%"
     >
-      {loading ? (
+      {loading || data === null ? (
         <div className="spinner-container">
           <CircularProgress sx={{ color: isDarkMode ? "#e0e0e0" : "#171C3F" }} />
         </div>
-      ) : filteredData.length === 0 ? (
+      ) : data.length === 0 ? (
         <Box
           display="flex"
           flexDirection="column"
@@ -154,7 +150,27 @@ const PlatformPage = () => {
           width="100%"
           className={`Warning ${isDarkMode ? "dark-mode" : ""}`}
           sx={{
-            backgroundColor: isDarkMode ? "rgba(255, 255, 0)" : "#fff3cd",
+            backgroundColor: isDarkMode ? "rgba(255, 255, 0, 0.1)" : "#fff3cd",
+            borderRadius: "10px",
+            padding: "20px",
+          }}
+        >
+          <WarningIcon sx={{ color: "#856404", fontSize: 50 }} />
+          <Typography variant="h6" sx={{ color: "#856404", fontWeight: "bold", mt: 2 }}>
+            {t("warning_!Data")}
+          </Typography>
+        </Box>
+      ) : filteredData.length === 0 ? (
+        // Afficher le message lorsque filteredData est vide
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          width="100%"
+          className={`Warning ${isDarkMode ? "dark-mode" : ""}`}
+          sx={{
+            backgroundColor: isDarkMode ? "rgba(255, 255, 0, 0.1)" : "#fff3cd",
             borderRadius: "10px",
             padding: "20px",
           }}
@@ -171,7 +187,7 @@ const PlatformPage = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell >{t("title_company")}</TableCell>
+                <TableCell>{t("title_company")}</TableCell>
                 <TableCell>{t("title_title")}</TableCell>
                 <TableCell>{t("title_location")}</TableCell>
                 <TableCell>{t("title_date")}</TableCell>
@@ -185,10 +201,10 @@ const PlatformPage = () => {
                   hover
                   style={{ cursor: "pointer" }}
                 >
-                  <TableCell className="elmTab" data-label="Company">{job.Company}</TableCell>
-                  <TableCell className="elmTab" data-label="Title">{job.Title}</TableCell>
-                  <TableCell className="elmTab" data-label="Location">{job.Location}</TableCell>
-                  <TableCell className="elmTab" data-label="Date">{job["Publication Date"]}</TableCell>
+                  <TableCell className="elmTab" data-label={t("title_company")}>{job.Company}</TableCell>
+                  <TableCell className="elmTab" data-label={t("title_title")}>{job.Title}</TableCell>
+                  <TableCell className="elmTab" data-label={t("title_location")}>{job.Location}</TableCell>
+                  <TableCell className="elmTab" data-label={t("title_date")}>{job["Publication Date"]}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -229,7 +245,7 @@ const PlatformPage = () => {
         <Box
           className={`details-container ${isMobile && !isTableVisible ? "active" : ""}`}
           sx={{
-            width: isMobile ? "100%" : "60%",
+            width: isMobile ? "90%" : "60%",
             marginLeft: isMobile ? 0 : "20px",
           }}
         >

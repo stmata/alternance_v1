@@ -185,7 +185,8 @@
         margin-bottom: 10px;
         text-align: center;
         top: auto;
-        right: auto;
+        font-size: 12px !important;
+        right: 0% !important;
     }
 
     /* Platform logo adjustments */
@@ -195,6 +196,7 @@
         height: auto;
         margin-bottom: 10px;
         margin-top: 10px; /* Add top margin if needed */
+        align-items: center !important;
     }
 
     /* Right info adjustments */
@@ -204,25 +206,41 @@
         width: 100%; /* Full width */
     }
 
-    /* Adjust file-promptt and region containers */
-    .file-promptt, .region {
+    .file-promptt {
         display: flex;
         justify-content: center;
         align-items: center;
-        flex-direction: column;
+        flex-direction: row; /* Place l'icône et le texte côte à côte */
         margin-bottom: 10px;
+        text-align: left; /* Aligne le texte à gauche */
+        margin-left: 15% !important;
     }
 
-    /* Icons and text alignment */
-    .file-prompt, .region {
-        text-align: center;
+    /* Texte et icône pour le fichier ou le prompt */
+    .file-prompt {
+        display: flex;
+        align-items: flex-start !important;
+        font-size: 12px !important;
+        white-space: normal;
+        overflow-wrap: break-word;
+        max-width: 100%; /* Limite la largeur du texte */
     }
 
-    /* Adjust the size of icons */
-    .file-icon, .prompt-icon, .region-icon {
-        font-size: 24px; /* Increase icon size if needed */
-        margin-bottom: 5px; /* Space between icon and text */
+    /* Icône */
+    .file-icon, .prompt-icon {
+        font-size: 18px;
+        margin-right: 8px; /* Espace entre l'icône et le texte */
+        flex-shrink: 0; /* Garde l'icône à une taille fixe */
+        align-self: flex-start;
     }
+
+    /* Texte spécifique dans file-prompt */
+    .file-prompt span {
+        max-width: calc(100% - 30px); /* Ajuste la largeur du texte pour éviter le chevauchement */
+        display: inline-block;
+        word-break: break-word; /* Retourne à la ligne pour les mots longs */
+    }
+    
 
     /* Adjust arrow button sizes */
     .MuiIconButton-root {

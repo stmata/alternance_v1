@@ -23,6 +23,7 @@ const Navbar = () => {
   const email = sessionStorage.getItem("userEmail");
   const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const burgerMenuRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const {
     setfileName,
@@ -79,7 +80,10 @@ const Navbar = () => {
   const initialsRef = useRef(null); // Ref for initials circle
   const initialsDropdownRef = useRef(null); // Ref for dropdown menu
 
-  
+  // Correction : Création des refs pour les menus déroulants
+  const platformDropdownRef = useRef(null);
+  const locationDropdownRef = useRef(null);
+
   const getInitials = (email) => {
     const nameParts = email.split("@")[0].split(".");
     return nameParts.map((part) => part[0].toUpperCase()).join("");
@@ -149,13 +153,52 @@ const Navbar = () => {
   const handleMouseLeaveInitialsDropdown = () => {
     setInitialsDropdownOpen(false);
   };
+
+  // Correction : Ajout d'un useEffect pour gérer les clics en dehors des menus déroulants
+  useEffect(() => {
+    const handleClickOutsideDropdown = (event) => {
+      if (
+        platformDropdownOpen &&
+        platformDropdownRef.current &&
+        !platformDropdownRef.current.contains(event.target) &&
+        !platformRef.current.contains(event.target)
+      ) {
+        setPlatformDropdownOpen(false);
+      }
+
+      if (
+        locationDropdownOpen &&
+        locationDropdownRef.current &&
+        !locationDropdownRef.current.contains(event.target) &&
+        !locationRef.current.contains(event.target)
+      ) {
+        setLocationDropdownOpen(false);
+      }
+
+      if (
+        initialsDropdownOpen &&
+        initialsDropdownRef.current &&
+        !initialsDropdownRef.current.contains(event.target) &&
+        !initialsRef.current.contains(event.target)
+      ) {
+        setInitialsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutsideDropdown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideDropdown);
+    };
+  }, [platformDropdownOpen, locationDropdownOpen, initialsDropdownOpen]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         isMenuOpen &&
         menuRef.current &&
+        burgerMenuRef.current &&
         !menuRef.current.contains(event.target) &&
-        !event.target.classList.contains("burger-menu")
+        !burgerMenuRef.current.contains(event.target)
       ) {
         setIsMenuOpen(false);
       }
@@ -166,32 +209,39 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isMenuOpen]);
-
   
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
-  
 
   return (
     <>
     <div 
-      className={`burger-menu ${isMenuOpen ? "active" : ""}`} 
-      onClick={toggleMenu}
-    >
-      <div 
-        className={`burger-bar top ${isMenuOpen ? "transform" : ""}`} 
-        style={{ backgroundColor: isDarkMode ? "#ffffff" : "#171C3F" }} 
-      />
-      <div 
-        className={`burger-bar middle ${isMenuOpen ? "hide" : ""}`} 
-        style={{ backgroundColor: isDarkMode ? "#ffffff" : "#171C3F" }} 
-      />
-      <div 
-        className={`burger-bar bottom ${isMenuOpen ? "transform" : ""}`} 
-        style={{ backgroundColor: isDarkMode ? "#ffffff" : "#171C3F" }} 
-      />
-    </div>
+  ref={burgerMenuRef} // Attach the ref here
+  className={`burger-menu ${isMenuOpen ? "active" : ""}`} 
+  onClick={(e) => { 
+    e.stopPropagation(); // Prevent the event from bubbling up
+    toggleMenu(); 
+  }}
+></div>
+    <div 
+  ref={burgerMenuRef}
+  className={`burger-menu ${isMenuOpen ? "active" : ""}`} 
+  onClick={toggleMenu}
+>
+  <div 
+    className={`burger-bar top ${isMenuOpen ? "transform" : ""}`} 
+    style={{ backgroundColor: isDarkMode ? "#ffffff" : "#171C3F" }} 
+  />
+  <div 
+    className={`burger-bar middle ${isMenuOpen ? "hide" : ""}`} 
+    style={{ backgroundColor: isDarkMode ? "#ffffff" : "#171C3F" }} 
+  />
+  <div 
+    className={`burger-bar bottom ${isMenuOpen ? "transform" : ""}`} 
+    style={{ backgroundColor: isDarkMode ? "#ffffff" : "#171C3F" }} 
+  />
+</div>
 
     {/* Menu qui s'ouvre et se ferme */}
     <nav 
@@ -224,6 +274,8 @@ const Navbar = () => {
                   className="dropdown-menu"
                   onMouseLeave={handleMouseLeaveDropdown}
                   style={{ textAlign: "center" }}
+                  // Correction : Attachement du ref au menu déroulant
+                  ref={platformDropdownRef}
                 >
                   <li
                     style={{
@@ -286,6 +338,8 @@ const Navbar = () => {
                 <ul
                   className="dropdown-menu"
                   onMouseLeave={handleMouseLeaveDropdown}
+                  // Correction : Attachement du ref au menu déroulant
+                  ref={locationDropdownRef}
                 >
                   <li
                     style={{

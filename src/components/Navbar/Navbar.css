@@ -484,6 +484,16 @@ input::placeholder {
     min-width: 150px; /* Facultatif : définir une largeur minimale si nécessaire */
     width: auto; /* Ajuste la largeur selon le contenu */
   }
+  .dark-mode .dropdown-menu li:hover {
+    background-color: #888 !important; /* Couleur de survol */
+  }
+  
+  .dropdown-menu li {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    cursor: pointer;
+  }
   
 }
 
