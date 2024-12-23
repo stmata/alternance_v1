@@ -136,6 +136,7 @@ const ListOfLikes = () => {
             const primaryResponsibilitiesLabel = t("primary_responsibilities");
             const keySkillsLabel = t("key_skills");
             const mainObjectivesLabel = t("main_objectives");
+            const niveau_experiencesLabel = t("niveau_experiences");
 
             const jobTitle =
               jobDescription.match(
@@ -160,6 +161,11 @@ const ListOfLikes = () => {
                 new RegExp(
                   `\\*\\*${mainObjectivesLabel}:\\*\\*([\\s\\S]*?)(\\*\\*|$)`
                 )
+              )?.[1] || t("no_more_details");
+            
+              const niveau_experiences =
+              jobDescription.match(
+                new RegExp(`\\*\\*${niveau_experiencesLabel}:\\*\\*([\\s\\S]*?)(\\*\\*|$)`)
               )?.[1] || t("no_more_details");
 
             return (
@@ -208,6 +214,10 @@ const ListOfLikes = () => {
                 <div className="job-section">
                   <DescriptionIcon sx={{ color: "#171C3F" }} /> {t("title_MO")}
                   <ul>{renderList(mainObjectives)}</ul>
+                </div>
+                <div className="job-section">
+                  <DescriptionIcon sx={{ color: "#171C3F" }} /> {t("title_LEVELEXP")}
+                  <ul>{renderList(niveau_experiences)}</ul>
                 </div>
               </div>
             );

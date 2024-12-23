@@ -5,6 +5,7 @@ import {
   faMapMarkerAlt,
   faSignOutAlt,
   faSearch,
+  faGraduationCap,
   faLightbulb,
   faCog,
   faPalette,
@@ -23,6 +24,7 @@ const Navbar = () => {
   const email = sessionStorage.getItem("userEmail");
   const [platformDropdownOpen, setPlatformDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const [levelDropdownOpen, setLevelDropdownOpen] = useState(false);
   const burgerMenuRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const {
@@ -45,9 +47,13 @@ const Navbar = () => {
     setFirstVisitPlatform,
     firstVisitRegion,
     setFirstVisitRegion,
+    isFirstVisitSmartMatching,
+    setIsFirstVisitSmartMatching,
     setIsChanged,
     setIsChanged2,
-    setTheme
+    setTheme,
+    etudeLevel,
+    setEtudeLevel
   } = useContext(AppContext);
 
   const [isDarkMode, setIsDarkMode] = useState(sessionStorage.getItem("theme") === "dark");
@@ -76,6 +82,7 @@ const Navbar = () => {
   const location = useLocation();
   const platformRef = useRef(null);
   const locationRef = useRef(null);
+  const levelButtonRef = useRef(null);
   const menuRef = useRef(null);
   const initialsRef = useRef(null); // Ref for initials circle
   const initialsDropdownRef = useRef(null); // Ref for dropdown menu
@@ -83,6 +90,7 @@ const Navbar = () => {
   // Correction : Création des refs pour les menus déroulants
   const platformDropdownRef = useRef(null);
   const locationDropdownRef = useRef(null);
+  const levelDropdownRef = useRef(null);
 
   const getInitials = (email) => {
     const nameParts = email.split("@")[0].split(".");
@@ -93,6 +101,7 @@ const Navbar = () => {
     // Reset all context and session storage
     setPlatform("apec");
     setRegion("ile_de_france");
+    setEtudeLevel("Master");
     setFileSummary("");
     setTextSummary("");
     setSmartPlatform("");
@@ -100,6 +109,7 @@ const Navbar = () => {
     setSearchTerm("");
     setFirstVisitPlatform(true);
     setFirstVisitRegion(true);
+    setIsFirstVisitSmartMatching(true);
     setIsAuthenticated(false);
     setIsChanged(false);
     setIsChanged2(false);
@@ -129,19 +139,36 @@ const Navbar = () => {
     setIsChanged2(true);
   };
 
+  const handleLevelSelect = (level) => {
+    setEtudeLevel(level);
+    setLevelDropdownOpen(false);
+    setIsFirstVisitSmartMatching(true);
+    setIsChanged(true);
+    setIsChanged2(true);
+  };
+
+  const toggleLevelDropdown = () => {
+    setLevelDropdownOpen((prev) => !prev);
+    setLocationDropdownOpen(false);
+    setPlatformDropdownOpen(false);
+  };
+
   const togglePlatformDropdown = () => {
     setPlatformDropdownOpen((prev) => !prev);
     setLocationDropdownOpen(false);
+    setLevelDropdownOpen(false);
   };
 
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen((prev) => !prev);
     setPlatformDropdownOpen(false);
+    setLevelDropdownOpen(false);
   };
 
   const handleMouseLeaveDropdown = () => {
     setPlatformDropdownOpen(false);
     setLocationDropdownOpen(false);
+    setLevelDropdownOpen(false);
   };
   
   const [initialsDropdownOpen, setInitialsDropdownOpen] = useState(false);
@@ -154,6 +181,13 @@ const Navbar = () => {
     setInitialsDropdownOpen(false);
   };
 
+    const levelDisplay = {
+      "Bac+4": "BBA",
+      "Master": "Master",
+      "Bac+3": "Bac+3"
+    };
+    
+
   // Correction : Ajout d'un useEffect pour gérer les clics en dehors des menus déroulants
   useEffect(() => {
     const handleClickOutsideDropdown = (event) => {
@@ -164,6 +198,15 @@ const Navbar = () => {
         !platformRef.current.contains(event.target)
       ) {
         setPlatformDropdownOpen(false);
+      }
+
+      if (
+        levelDropdownOpen &&
+        levelDropdownRef.current &&
+        !levelDropdownRef.current.contains(event.target) &&
+        !levelButtonRef.current.contains(event.target)
+      ) {
+        setLevelDropdownOpen(false);
       }
 
       if (
@@ -189,7 +232,7 @@ const Navbar = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutsideDropdown);
     };
-  }, [platformDropdownOpen, locationDropdownOpen, initialsDropdownOpen]);
+  }, [platformDropdownOpen, locationDropdownOpen, initialsDropdownOpen, levelDropdownOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -321,6 +364,18 @@ const Navbar = () => {
                   >
                     Welcome to jungle
                   </li>
+
+                  <li
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "10px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handlePlatformSelect("hellowork")}
+                  >
+                    Hello Work
+                  </li>
                 </ul>
               )}
             </div>
@@ -363,9 +418,78 @@ const Navbar = () => {
                   >
                     Hauts-de-France
                   </li>
+
+                  <li
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "10px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleRegionSelect("Others")}
+                  >
+                    { t("others_region") }
+                  </li>
                 </ul>
               )}
             </div>
+
+            {location.pathname === "/SmartMatching" && (
+              <>
+                <div
+                  ref={levelButtonRef}
+                  className={`dropdownPlatform ${levelDropdownOpen ? "active" : ""}`}
+                  onClick={toggleLevelDropdown}
+                >
+                  <FontAwesomeIcon
+                    icon={faGraduationCap}
+                    color={isDarkMode ? "#ffffff" : "#171C3F"}
+                  />
+                  <span>{!isFirstVisitSmartMatching ? t("title_level") : (levelDisplay[etudeLevel] || etudeLevel)}</span>
+                  {levelDropdownOpen && (
+                    <ul
+                      className="dropdown-menu"
+                      onMouseLeave={handleMouseLeaveDropdown}
+                      ref={levelDropdownRef}
+                    >
+                      <li
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          padding: "10px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleLevelSelect("Master")}
+                      >
+                        Master
+                      </li>
+                      <li
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          padding: "10px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleLevelSelect("Bac+4")}
+                      >
+                        BBA
+                      </li>
+                      <li
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          padding: "10px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleLevelSelect("Bac+3")}
+                      >
+                        Bac+3
+                      </li>
+                    </ul>
+                  )}
+                </div>
+              </>
+            )}
 
             {location.pathname === "/PlatformPage" && (
               <div className="job-input">
@@ -426,6 +550,7 @@ const Navbar = () => {
             </div>
           </>
         )}
+
 
         {location.pathname === "/historyRslts" && (
           <>

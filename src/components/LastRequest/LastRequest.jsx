@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"; // Added useNavigate for redirec
 import indeedLogo from "../../assets/indeed.png"; // Import as src image
 import linkedinLogo from "../../assets/linkedin.png";
 import apecLogo from "../../assets/apec.png";
+import helloworkLogo from "../../assets/hellowork.svg";
 import jungleLogo from "../../assets/jungle.png";
 import "./LastRequest.css"; // Custom styles for dots and layout
 import { AppContext } from "../../AppContext"; // Importing context
@@ -121,6 +122,8 @@ const LastRequest = () => {
         return jungleLogo;
       case "apec":
         return apecLogo;
+      case "hellowork":
+        return helloworkLogo;
       default:
         return null;
     }

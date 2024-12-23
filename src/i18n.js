@@ -30,6 +30,9 @@ const resources = {
       "title_PR": "Primary Responsibilities:",
       "title_KRS": "Key Required Skills:",
       "title_MO": "Main Objectives:",
+      "title_LEVELEXP": "Education/Experience :",
+      "title_level": "Level",
+      "others_region": "Other Regions",
       "title_LJP": "Liked Job Posts :",
       "title_VJ": "View Job",
       "error_!LJ": "There are currently no posts available for display.<br />Please engage with posts in the manual matching section to enable viewing.",
@@ -64,6 +67,7 @@ const resources = {
       "primary_responsibilities": "Primary Responsibilities",
       "key_skills": "Key Required Skills",
       "main_objectives": "Main Objectives",
+      "niveau_experiences": "Education/Experience",
       "no_more_details":"Click view alternance for more details!",
       "theme": "Change theme"
     }
@@ -94,6 +98,9 @@ const resources = {
         "title_PR": "Responsabilités principales :",
         "title_KRS": "Compétences clés requises :",
         "title_MO": "Objectifs principaux :",
+        "title_LEVELEXP": "Niveau d'Études/Expérience :",
+        "title_level": "Niveau",
+        "others_region": "Autres Régions",
         "title_LJP": "Annonces aimées :",
         "title_VJ": "Voir le poste",
         "error_!LJ": "Il n'y a actuellement aucun post disponible à afficher.<br />Veuillez interagir avec des annonces dans la section de correspondance manuelle pour activer l'affichage.",
@@ -128,6 +135,7 @@ const resources = {
         "primary_responsibilities": "Responsabilités Principales",
         "key_skills": "Compétences Clés Requises",
         "main_objectives": "Objectifs Principaux",
+        "niveau_experiences": "Niveau d'Études/Expérience",
         "no_more_details": "Cliquez sur voir l'alternance pour plus de détails !",
       "theme": "Changer le thème"
       }

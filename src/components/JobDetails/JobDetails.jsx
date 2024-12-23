@@ -15,6 +15,7 @@ const JobDetails = ({ selectedJob }) => {
   const primaryResponsibilitiesLabel = t("primary_responsibilities");
   const keySkillsLabel = t("key_skills");
   const mainObjectivesLabel = t("main_objectives");
+  const niveau_experiencesLabel = t("niveau_experiences");
 
   const jobTitle =
     jobDescription.match(
@@ -33,6 +34,10 @@ const JobDetails = ({ selectedJob }) => {
   const mainObjectives =
     jobDescription.match(
       new RegExp(`\\*\\*${mainObjectivesLabel}:\\*\\*([\\s\\S]*?)(\\*\\*|$)`)
+    )?.[1] || t("no_more_details");
+  const niveau_experiences =
+    jobDescription.match(
+      new RegExp(`\\*\\*${niveau_experiencesLabel}:\\*\\*([\\s\\S]*?)(\\*\\*|$)`)
     )?.[1] || t("no_more_details");
   const [likedRows, setLikedRows] = useState({}); // Store the like state for each post based on the unique identifier
   const userId = sessionStorage.getItem("user_id");
@@ -191,6 +196,11 @@ const JobDetails = ({ selectedJob }) => {
 <Box>
   <strong>{t("title_MO")}</strong>
   <ul>{renderList(mainObjectives)}</ul>
+</Box>
+
+<Box>
+  <strong>{t("title_LEVELEXP")}</strong>
+  <ul>{renderList(niveau_experiences)}</ul>
 </Box>
 
     </Box>

@@ -23,6 +23,7 @@ const SmartFilter = () => {
     isChanged2,
     platform,
     region,
+    etudeLevel
   } = useContext(AppContext);
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -122,11 +123,13 @@ const SmartFilter = () => {
       // Prepare request body
       const requestBody = {
         platform: normalizeString(platform),
-        region: normalizeString(region),
+        region: "france",
         summarized_text: summary,
         type_summary: type, // Sera défini en fonction de la condition
         user_id: sessionStorage.getItem("user_id"),
         filename: type === 'cv' ? fileName : promptText,
+        education_level : etudeLevel,
+        city_for_filter: normalizeString(region)
     };
     
     

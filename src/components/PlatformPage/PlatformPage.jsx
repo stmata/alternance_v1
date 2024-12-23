@@ -19,6 +19,7 @@ import "./PlatformPage.css";
 import JobDetails from "../JobDetails/JobDetails";
 import { useTranslation } from 'react-i18next';
 
+
 const PlatformPage = () => {
   const { platform, region, searchTerm } = useContext(AppContext);
   const [data, setData] = useState(null);  // Initialiser data à null
@@ -51,12 +52,17 @@ const PlatformPage = () => {
         },
         body: JSON.stringify({
           platform: platformToFetch,
-          region: regionToFetch,
+          region: 'france',
         }),
       });
       const result = await response.json();
       console.log(result)
-      setData(result.content || []);
+      //setData(result.content || []);
+      // Filtrer les données pour ne garder que celles de la région sélectionnée
+      const filteredResults = (result.content || []).filter(item => 
+        item.Region.toLowerCase() === regionToFetch.toLowerCase()
+      );
+      setData(filteredResults);
     } catch (error) {
       console.error("Error:", error);
       setData([]);  // S'assurer que data est un tableau vide en cas d'erreur
@@ -109,6 +115,7 @@ const PlatformPage = () => {
             job.Title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             job.Company.toLowerCase().includes(searchTerm.toLowerCase()) ||
             job.Location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            job.Level.toLowerCase().includes(searchTerm.toLowerCase()) ||
             job["Publication Date"]
               .toLowerCase()
               .includes(searchTerm.toLowerCase())

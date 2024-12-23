@@ -9,4 +9,10 @@ export default defineConfig({
       overlay: false,  // Désactive l'overlay d'erreur
     },
   },
+  build: {
+    rollupOptions: {
+      input: 'index.html', // Spécifie le point d'entrée principal
+    },
+  },
+  publicDir: 'public',
 })

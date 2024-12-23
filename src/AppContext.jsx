@@ -14,6 +14,7 @@ export const AppProvider = ({ children }) => {
   const [fileName, setfileName] = useState(sessionStorage.getItem('fileName') || '');
   const [userId, setUserId] = useState(sessionStorage.getItem('user_id') || '');
   const [email, setEmail] = useState(sessionStorage.getItem('userEmail') || '');
+  const [etudeLevel, setEtudeLevel] = useState(sessionStorage.getItem('etudeLevel') || 'Bac+3');
   const [new_data_added, setNewDataAdded] = useState(
     sessionStorage.getItem('new_data_added') === 'true' || false
   );
@@ -36,6 +37,12 @@ export const AppProvider = ({ children }) => {
     }
   }, [userId]);
 
+  useEffect(() => {
+    if (etudeLevel) {
+      sessionStorage.setItem('etudeLevel', etudeLevel);
+    }
+  }, [etudeLevel]);
+
   const [hasCvResults, setHasCvResults] = useState(
     sessionStorage.getItem('hasCvResults') === 'true' || false
   );
@@ -48,12 +55,23 @@ export const AppProvider = ({ children }) => {
   const [firstVisitRegion, setFirstVisitRegion] = useState(
     sessionStorage.getItem('firstVisitRegion') === 'false' ? false : true
   );
+
+  const [isFirstVisitSmartMatching, setIsFirstVisitSmartMatching] = useState(
+    sessionStorage.getItem('isFirstVisitSmartMatching') === 'false' ? false : true
+  );
+    
   const [isChanged, setIsChanged] = useState(false);
   const [isChanged2, setIsChanged2] = useState(false);
   const [hasPromptResults, setHasPromptResults] = useState(
     sessionStorage.getItem('hasPromptResults') === 'true' || false
   );
   
+  useEffect(() => {
+    if (isFirstVisitSmartMatching) {
+      sessionStorage.setItem('isFirstVisitSmartMatching', 'false');
+    }
+  }, [isFirstVisitSmartMatching]);
+
   useEffect(() => {
     sessionStorage.setItem('hasCvResults', hasCvResults ? 'true' : 'false');
   }, [hasCvResults]);
@@ -137,7 +155,7 @@ export const AppProvider = ({ children }) => {
   }, [savedPrompt]);
 
   return (
-    <AppContext.Provider value={{language, setLanguage,new_data_added, setNewDataAdded, email, setEmail, userId, setUserId, fileName, setfileName, savedPrompt, setsavedPrompt, hasPromptResults, setHasPromptResults, hasCvResults, setHasCvResults, isAuthenticated, setIsAuthenticated, platform, setPlatform, region, setRegion, searchTerm, setSearchTerm, fileSummary, setFileSummary, textSummary, setTextSummary, smartPlatform, setSmartPlatform, smartRegion, setSmartRegion, firstVisitPlatform, setFirstVisitPlatform, firstVisitRegion, setFirstVisitRegion, isChanged, setIsChanged, isChanged2, setIsChanged2 }}>
+    <AppContext.Provider value={{language, setLanguage,new_data_added, setNewDataAdded, email, setEmail, userId, setUserId, fileName, setfileName, savedPrompt, setsavedPrompt, hasPromptResults, setHasPromptResults, hasCvResults, setHasCvResults, isAuthenticated, setIsAuthenticated, platform, setPlatform, region, setRegion, searchTerm, setSearchTerm, fileSummary, setFileSummary, textSummary, setTextSummary, smartPlatform, setSmartPlatform, smartRegion, setSmartRegion, firstVisitPlatform, setFirstVisitPlatform, firstVisitRegion, setFirstVisitRegion, isChanged, setIsChanged, isChanged2, setIsChanged2, etudeLevel, setEtudeLevel, isFirstVisitSmartMatching, setIsFirstVisitSmartMatching }}>
       {children}
     </AppContext.Provider>
   );
