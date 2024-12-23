@@ -213,7 +213,7 @@ const LastRequest = () => {
                   <Box display="flex" alignItems="center" className='file-promptt'>
                     <MdLocationOn className="region-icon" />
                     <Typography variant="body1" className="file-prompt">
-                      {request.region}
+                      {request.city_for_filter}
                     </Typography>
                   </Box>
                 </Box>
