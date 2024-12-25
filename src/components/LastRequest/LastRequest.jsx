@@ -178,7 +178,7 @@ const LastRequest = () => {
                   <img
                     src={getPlatformImage(request.platform)}
                     alt={request.platform}
-                    className="platform-logo"
+                    className={`platform-logo ${request.platform.toLowerCase() === 'hellowork' && isDarkMode ? 'invert-platform-logo-hellowork' : ''}`}
                   />
                 </Box>
 
