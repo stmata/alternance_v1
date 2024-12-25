@@ -89,6 +89,10 @@
     transform: scale(1.05);
 }
 
+.invert-platform-logo-hellowork {
+  filter: brightness(0) invert(1);
+}
+
 /* Date and Time */
 .date-time {
     font-size: 16px !important;
